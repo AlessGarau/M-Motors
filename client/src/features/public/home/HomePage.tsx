@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 
-export default function HomePage() {
+export const HomePage = () => {
   return (
     <div>
         <h1>HomePage</h1>
