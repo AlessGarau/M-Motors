@@ -8,6 +8,11 @@ class FolderViewSet(viewsets.ModelViewSet):
     serializer_class = FolderSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        print(f"Utilisateur connecté : {user}")
+        return Folder.objects.filter(user=user)
+    
     def perform_create(self, serializer):
         print("perform_create() appelée !")
         print("Utilisateur authentifié :", self.request.user)
