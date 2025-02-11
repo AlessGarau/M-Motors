@@ -1,5 +1,7 @@
 from django.db import models
 from app.entities.car.models import Car
+from django.contrib.auth.models import User
+
 
 class Folder(models.Model):
     TYPE_CHOICES = {
@@ -13,7 +15,7 @@ class Folder(models.Model):
         "REJECTED": 'Refusé'
     }
     
-    # client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
