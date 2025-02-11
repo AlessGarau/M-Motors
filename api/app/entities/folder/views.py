@@ -8,4 +8,4 @@ class FoderViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(client=self.request.user.client)
+        serializer.save(user=self.request.user.user)
