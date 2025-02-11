@@ -1,6 +1,6 @@
 
-from app.models import Example
-from app.serializer.example_serializer import ExampleSerializer
+from app.entities.example.models import Example
+from app.entities.example.serializer import ExampleSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
 

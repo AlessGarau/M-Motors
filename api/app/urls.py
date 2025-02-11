@@ -1,5 +1,6 @@
 from rest_framework.routers import DefaultRouter
-from .views.example_viewset import ExampleViewSet
+
+from app.entities.example.views import ExampleViewSet
 
 router = DefaultRouter()
 router.register(r'example', ExampleViewSet, basename='example')
