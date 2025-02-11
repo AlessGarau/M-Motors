@@ -5,4 +5,3 @@ python3 manage.py migrate
 
 ## Run locally
 python3 manage.py runserver
-
