@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 
 class Folder(models.Model):
     TYPE_CHOICES = {
-        "SALE": "Location",
-        "RENTAL": "Vente"
+        "SALE": "Vente",
+        "RENTAL": "Location"
     }
     
     STATUS_CHOICES = {
