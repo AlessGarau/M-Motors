@@ -38,3 +38,8 @@ class UserViewSet(viewsets.ModelViewSet):
             })
         else:
             return Response({"error": "Login failed"}, status=status.HTTP_403_FORBIDDEN)
+        
+    @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        serializer = self.get_serializer(instance=request.user)
+        return Response({"user": serializer.data}, status=status.HTTP_200_OK)
