@@ -1,8 +1,6 @@
 import * as React from "react";
 import { ChevronRight, GalleryVerticalEnd } from "lucide-react";
 
-import { SearchForm } from "@/components/search-form";
-import { VersionSwitcher } from "@/components/version-switcher";
 import {
   Collapsible,
   CollapsibleContent,
@@ -57,8 +55,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">M-Motors Admin</span>
-                  <span className=""></span>
+                  <span className="font-semibold">M-Motors</span>
+                  <span className="">Admin</span>
                 </div>
               </a>
             </SidebarMenuButton>

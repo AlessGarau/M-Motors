@@ -1,8 +1,20 @@
 import { Outlet, useLocation } from "react-router-dom";
 import CarsPanel from "./panels/CarsPanel";
-import { Sidebar, SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
 import { Separator } from "@radix-ui/react-separator";
 
 export const adminRouter = [
@@ -20,6 +32,8 @@ export const adminRouter = [
 
 function AdminLayout() {
   const location = useLocation();
+  const resourceName = location.pathname.split("admin")?.[1].replace('/', ' ').trim();
+  const displayName = resourceName[0].toLocaleUpperCase() + resourceName.substring(1)
   return (
     <>
       <SidebarProvider>
@@ -35,10 +49,14 @@ function AdminLayout() {
                     Gestion des resources M-Motors
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{location.pathname}</BreadcrumbPage>
-                </BreadcrumbItem>
+                {resourceName && resourceName != '/' && (
+                  <>
+                    <BreadcrumbSeparator className="hidden md:block" />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{displayName}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </>
+                )}
               </BreadcrumbList>
             </Breadcrumb>
           </header>
