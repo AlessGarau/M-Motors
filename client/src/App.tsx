@@ -1,9 +1,23 @@
-import "./App.css";
-import { RouterProvider } from "react-router-dom";
-import { router } from "./router";
+import {
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 
-function App() {
-    return <RouterProvider router={router} />;
+import { adminRouter } from "./pages/admin/admin-router";
+import { loginRouter } from "./pages/login/login-router";
+import AuthLayout from "./auth/AuthLayout";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <AuthLayout />,
+    children: [
+      ...loginRouter,
+      ...adminRouter
+    ],
+  },
+]);
+
+export function App() {
+  return <RouterProvider router={router} />;
 }
-
-export default App;
