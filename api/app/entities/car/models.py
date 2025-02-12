@@ -10,9 +10,9 @@ class Car(models.Model):
         "NISSAN": "Nissan",
         "CITROEN": "Citroën",
     }
-    SERVICE_TYPE_CHOICES = {
-        "SALE": "Location",
-        "RENTAL": "Vente"
+    TYPE_CHOICES = {
+        "SALE": "Vente",
+        "RENTAL": "Location"
     }
     brand = models.CharField(
         max_length=15,

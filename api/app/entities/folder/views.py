@@ -22,4 +22,3 @@ class FolderViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("Utilisateur non authentifié !")
 
         serializer.save(user=self.request.user)
-
