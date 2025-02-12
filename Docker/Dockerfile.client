@@ -8,4 +8,4 @@ RUN npm install
 
 COPY ../client ./
 
-RUN npm run dev
+RUN  npm run build
