@@ -8,6 +8,12 @@ const routes: RouteObject[] = [
     path: "/collections",
     element: <CollectionsPage />,
   },
+  {
+    path: "authentication/login",
+  },
+  {
+    path: "authentication/register",
+  },
 ];
 
 export const router = createBrowserRouter(routes);
