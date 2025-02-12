@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { useAuth } from "../../../contexts/auth";
 import { Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate()
     const auth = useAuth();
 
     const requestLogin = async () => {
@@ -26,6 +27,7 @@ const LoginForm = () => {
             auth.setUser(data.user);
             auth.setToken(data.access_token);
             document.cookie = `access_token=${data.access}; path=/; Secure; SameSite=Strict`;
+            navigate("/")
         } catch (error) {
             console.error(error)
         } finally {
