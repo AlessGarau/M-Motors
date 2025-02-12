@@ -1,3 +1,4 @@
+from typing import Required
 from django.db import models
 
 class Car(models.Model):
