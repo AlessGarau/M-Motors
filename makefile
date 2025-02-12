@@ -1,5 +1,5 @@
 install:
-	docker-compose -f Docker/docker-compose.dev.yml -p motor-m up --build --no-start
+	sh install.sh
 
 start:
 	docker-compose -f Docker/docker-compose.dev.yml -p motor-m up
