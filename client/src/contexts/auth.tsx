@@ -5,7 +5,8 @@ interface IAuthContext {
     user: Record<string, any> | null;
     setUser: (user: Record<string, any> | null) => void;
     setToken: (token: string | null) => void;
-    token: string | null
+    token: string | null;
+    isAdmin: boolean;
 }
 
 interface AuthContextProviderProps {
@@ -17,6 +18,7 @@ const AuthContext = createContext<IAuthContext | undefined>(undefined);
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     const [user, setUser] = useState<Record<string, any> | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
     function getCookie(name: string | Record<string, any>) {
         const value = `; ${document.cookie}`;
@@ -26,10 +28,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
     useEffect(() => {
         const accessToken = getCookie('access_token');
-        const storedUser = getCookie('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        } else if (accessToken) {
+        if (accessToken && !user) {
             const getUser = async () => {
                 try {
                     const response = await fetch(import.meta.env.VITE_API_URL + "user/me/", {
@@ -39,6 +38,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
                     });
                     const data = await response.json();
                     setUser(data.user);
+                    setIsAdmin(data.user.is_admin)
                     document.cookie = `user=${JSON.stringify(data.user)}; path=/`;
                 } catch (error) {
                     console.error("Failed to fetch user:", error);
@@ -49,7 +49,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         }
     }, []);
 
-    return <AuthContext.Provider value={{ user, setUser, token, setToken }}>
+    return <AuthContext.Provider value={{ user, setUser, token, setToken, isAdmin }}>
         {children}
     </AuthContext.Provider>
 

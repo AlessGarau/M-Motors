@@ -25,7 +25,6 @@ const LoginForm = () => {
             auth.setUser(data.user);
             auth.setToken(data.access_token);
             document.cookie = `access_token=${data.access}; path=/; Secure; SameSite=Strict`;
-            document.cookie = `user=${JSON.stringify(data.user)}; path=/; Secure; SameSite=Strict`;
         } catch (error) {
             console.error(error)
         } finally {
