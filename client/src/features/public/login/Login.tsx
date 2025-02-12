@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/auth";
 import { Loader2 } from "lucide-react";
 
 const LoginForm = () => {
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const auth = useAuth();
@@ -17,7 +17,7 @@ const LoginForm = () => {
             const response = await fetch(import.meta.env.VITE_API_URL + "user/login/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username:email, password }),
+                body: JSON.stringify({ username, password }),
             });
 
             const data = await response.json();
@@ -48,9 +48,9 @@ const LoginForm = () => {
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <Input 
-                                placeholder="Email" 
-                                value={email} 
-                                onChange={(e) => setEmail(e.target.value)} 
+                                placeholder="Username" 
+                                value={username} 
+                                onChange={(e) => setUsername(e.target.value)} 
                                 required 
                                 className="rounded-lg"
                             />
