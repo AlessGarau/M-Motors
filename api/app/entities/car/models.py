@@ -10,7 +10,7 @@ class Car(models.Model):
         "NISSAN": "Nissan",
         "CITROEN": "Citroën",
     }
-    TYPE_CHOICES = {
+    SERVICE_TYPE_CHOICES = {
         "SALE": "Vente",
         "RENTAL": "Location"
     }
