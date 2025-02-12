@@ -30,5 +30,5 @@
     }
 
   },
-  "include": ["src"]
+  "include": ["src", "../client2/contexts", "../client2/src/pages/login/login", "../client2/src/pages/login/Login.tsx", "../client2/src/components/ui/card.tsx"]
 }

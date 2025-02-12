@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import { CollectionsPage } from "./features/public/collections/CollectionsPage";
 import { HomePage } from "./features/public/home/HomePage";
-import { LoginForm } from "./features/public/login/Login";
+import { LoginForm } from "../../client2/src/pages/login/Login";
 import AuthLayout from "./features/auth/AuthLayout";
 
 const routes: RouteObject[] = [

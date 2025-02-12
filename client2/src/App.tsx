@@ -4,9 +4,18 @@ import {
 } from "react-router-dom";
 
 import { adminRouter } from "./pages/admin/admin-router";
+import { loginRouter } from "./pages/login/login-router";
+import AuthLayout from "./auth/AuthLayout";
 
 const router = createBrowserRouter([
-    ...adminRouter
+  {
+    path: "/",
+    element: <AuthLayout />,
+    children: [
+      ...loginRouter,
+      ...adminRouter
+    ],
+  },
 ]);
 
 export function App() {

@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/contexts/auth'
+import { useAuth } from '../../../../../client2/contexts/auth'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
