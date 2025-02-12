@@ -10,19 +10,21 @@ class Car(models.Model):
         "NISSAN": "Nissan",
         "CITROEN": "Citroën",
     }
-    TYPE_CHOICES = {
-        "SALE": "Location",
-        "RENTAL": "Vente"
+    SERVICE_TYPE_CHOICES = {
+        "SALE": "Vente",
+        "RENTAL": "Location"
     }
     brand = models.CharField(
         max_length=15,
         choices=BRAND_CHOICES,
-        default=BRAND_CHOICES["RENAULT"]
+    )
+    service_type = models.CharField(
+        choices=SERVICE_TYPE_CHOICES,
+        max_length=10,
+        default="Vente"
     )
     model = models.CharField(max_length=100)
     year = models.IntegerField()
     kilometers = models.BigIntegerField()
     price = models.IntegerField()
-    type = models.CharField(choices=TYPE_CHOICES, max_length=10)
-    test = models.CharField(choices=TYPE_CHOICES, max_length=10)
     
