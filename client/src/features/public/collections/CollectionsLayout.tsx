@@ -1,4 +1,4 @@
-import CollectionsPage from "./CollectionsPage";
+import { CollectionsPage } from "./CollectionsPage";
 
 export default function CollectionsLayout() {
   return <CollectionsPage />;
