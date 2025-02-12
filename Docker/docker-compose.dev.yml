@@ -50,18 +50,18 @@ services:
       - ../api:/app/api
       - /app/api/__pycache__
 
-# motor-m-front:
-#   build:
-#     context: ..
-#     target: build
-#     dockerfile: Docker/Dockerfile.client
-#   networks:
-#     - motor-m-network
-#   volumes:
-#     - ../client:/app/client
-#   ports:
-#     - 5173:5173
-#   command: npm start
+  motor-m-front:
+    build:
+      context: ..
+      target: build
+      dockerfile: Docker/Dockerfile.client
+    networks:
+      - motor-m-network
+    volumes:
+      - ../client:/app/client
+    ports:
+      - 5173:5173
+    command: npm start
 
 networks:
   motor-m-network:
