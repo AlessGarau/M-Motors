@@ -27,7 +27,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user = authenticate(username=username, password=password)
         if user:
             refresh = RefreshToken.for_user(user)
-            return Response({
+            response = Response({
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
                 "user": {
@@ -36,6 +36,15 @@ class UserViewSet(viewsets.ModelViewSet):
                     "email": user.email
                 }
             })
+            response.set_cookie(
+                key='access_token',
+                value=str(refresh.access_token),
+                httponly=True,
+                secure=False,  
+                samesite='Strict', 
+                max_age=3600 
+            )
+            return response
         else:
             return Response({"error": "Login failed"}, status=status.HTTP_403_FORBIDDEN)
         

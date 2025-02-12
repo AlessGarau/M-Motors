@@ -26,7 +26,6 @@ const LoginForm = () => {
             if (!response.ok) throw new Error(data.detail || "Login failed");
             auth.setUser(data.user);
             auth.setToken(data.access_token);
-            document.cookie = `access_token=${data.access}; path=/; Secure; SameSite=Strict`;
             navigate("/")
         } catch (error) {
             console.error(error)
