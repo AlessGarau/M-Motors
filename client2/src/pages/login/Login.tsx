@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { useAuth } from "../../../contexts/auth";
 import { Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const LoginForm = () => {
     const [username, setUsername] = useState("");
@@ -39,34 +40,39 @@ const LoginForm = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100 w-full">
-    
-                <Card className="w-96 p-6 shadow-xl rounded-2xl">
-                    <CardHeader>
-                        <CardTitle className="text-center text-xl font-bold">Login</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <Input 
-                                placeholder="Username" 
-                                value={username} 
-                                onChange={(e) => setUsername(e.target.value)} 
-                                required 
-                                className="rounded-lg"
-                            />
-                            <Input 
-                                type="password" 
-                                placeholder="Password" 
-                                value={password} 
-                                onChange={(e) => setPassword(e.target.value)} 
-                                required 
-                                className="rounded-lg"
-                            />
-                            <Button type="submit" className="w-full flex items-center justify-center gap-2" disabled={loading}>
-                                {loading && <Loader2 className="w-4 h-4 animate-spin" />} Login
-                            </Button>
-                        </form>
-                    </CardContent>
-                </Card>
+
+            <Card className="w-96 p-6 shadow-xl rounded-2xl">
+                <CardHeader>
+                    <CardTitle className="text-center text-xl font-bold">Login</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <Input
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                            className="rounded-lg"
+                        />
+                        <Input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="rounded-lg"
+                        />
+                        <Button type="submit" className="w-full flex items-center justify-center gap-2" disabled={loading}>
+                            {loading && <Loader2 className="w-4 h-4 animate-spin" />} Login
+                        </Button>
+                    </form>
+                    <div className="mt-4 text-center">
+                        <Link to="/register" className="text-blue-600 hover:underline">
+                            Register here if you don't have an account
+                        </Link>
+                    </div>  
+                </CardContent>
+            </Card>
         </div>
     );
 };
