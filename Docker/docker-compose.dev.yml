@@ -51,6 +51,7 @@ services:
       - /app/api/__pycache__
 
   motor-m-front:
+    platform: linux/amd64
     build:
       context: ..
       target: build
@@ -59,9 +60,10 @@ services:
       - motor-m-network
     volumes:
       - ../client:/app/client
+      - node_modules:/app/client/node_modules
     ports:
-      - 5173:5173
-    command: npm start
+      - "5173:5173"
+    command: npm run dev
 
 networks:
   motor-m-network:
@@ -70,3 +72,4 @@ networks:
 volumes:
   motor-m-db-postgres-data:
   minio-data:
+  node_modules:
