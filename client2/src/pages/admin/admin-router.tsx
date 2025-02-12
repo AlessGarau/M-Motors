@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import CarsPanel from "./panels/CarsPanel";
+import CarsPanel from "./panels/cars/CarsPanel";
 import {
   Sidebar,
   SidebarInset,
@@ -32,8 +32,12 @@ export const adminRouter = [
 
 function AdminLayout() {
   const location = useLocation();
-  const resourceName = location.pathname.split("admin")?.[1].replace('/', ' ').trim();
-  const displayName = resourceName[0].toLocaleUpperCase() + resourceName.substring(1)
+  const resourceName = location.pathname
+    .split("admin")?.[1]
+    .replace("/", " ")
+    .trim();
+  const displayName =
+    resourceName[0].toLocaleUpperCase() + resourceName.substring(1);
   return (
     <>
       <SidebarProvider>
@@ -49,7 +53,7 @@ function AdminLayout() {
                     Gestion des resources M-Motors
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                {resourceName && resourceName != '/' && (
+                {resourceName && resourceName != "/" && (
                   <>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>
@@ -60,17 +64,9 @@ function AdminLayout() {
               </BreadcrumbList>
             </Breadcrumb>
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4">
-            <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-              <div className="aspect-video rounded-xl bg-muted/50" />
-              <div className="aspect-video rounded-xl bg-muted/50" />
-              <div className="aspect-video rounded-xl bg-muted/50" />
-            </div>
-            <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-          </div>
+          <Outlet />
         </SidebarInset>
       </SidebarProvider>
-      <Outlet />
     </>
   );
 }
