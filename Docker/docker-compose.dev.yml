@@ -61,11 +61,9 @@ services:
       - motor-m-network
     volumes:
       - ../client:/app/client
-      - node_modules:/app/client/node_modules
+      - /app/client/node_modules
     ports:
       - "5173:5173"
-    env_file:
-      - ../client/.env
     command: npm run dev
 
 networks:

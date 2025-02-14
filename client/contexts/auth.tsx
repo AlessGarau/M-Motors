@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 
 interface IAuthContext {
@@ -23,8 +23,8 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     function getCookie(name: string | Record<string, any>) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
-        if (parts && parts.length === 2) return parts.pop().split(';').shift();
-      }
+        if (parts && parts.length === 2) return parts.pop()!.split(';').shift();
+    }
 
     useEffect(() => {
         const accessToken = getCookie('access_token');
@@ -63,4 +63,5 @@ const useAuth = () => {
     return context;
 };
 
-export { AuthContextProvider, useAuth }
+export { AuthContextProvider, useAuth };
+

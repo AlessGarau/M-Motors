@@ -1,10 +1,10 @@
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+// import {
+//   ColumnDef,
+//   flexRender,
+//   getCoreRowModel,
+//   getPaginationRowModel,
+//   useReactTable,
+// } from "@tanstack/react-table";
 
 import {
   Table,
@@ -14,8 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 
-export function List<T>({data, columns}: {data: T[], columns: ColumnDef<T>[]}) {
+export function List<T>({ data, columns }: { data: T[], columns: ColumnDef<T>[] }) {
   const table = useReactTable({
     data: data || [],
     columns,

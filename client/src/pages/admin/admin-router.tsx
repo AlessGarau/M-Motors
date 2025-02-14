@@ -1,21 +1,20 @@
-import { Outlet, useLocation } from "react-router-dom";
-import CarsPanel from "./panels/cars/CarsPanel";
-import {
-  Sidebar,
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
+  BreadcrumbList,
   BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger
+} from "@/components/ui/sidebar";
 import { Separator } from "@radix-ui/react-separator";
+import { Outlet, useLocation } from "react-router-dom";
+import CarsPanel from "./panels/cars/CarsPanel";
 
 export const adminRouter = [
   {
