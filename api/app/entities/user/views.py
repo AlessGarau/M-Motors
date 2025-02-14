@@ -11,7 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    
+
     @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def register(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -42,13 +42,21 @@ class UserViewSet(viewsets.ModelViewSet):
                 httponly=True,
                 secure=False,  
                 samesite='Strict', 
-                max_age=3600 
+                max_age=86400
             )
             return response
         else:
             return Response({"error": "Login failed"}, status=status.HTTP_403_FORBIDDEN)
-        
-    @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
+
+    @action(detail=False, methods=["get", "post"], permission_classes=[IsAuthenticated])
     def me(self, request):
-        serializer = self.get_serializer(instance=request.user)
+        user = request.user
+
+        if request.method == "POST":
+            is_admin = request.data.get("isAdmin")
+            if is_admin is not None:
+                user.profile.is_admin = is_admin
+                user.profile.save()
+
+        serializer = self.get_serializer(instance=user)
         return Response({"user": serializer.data}, status=status.HTTP_200_OK)
