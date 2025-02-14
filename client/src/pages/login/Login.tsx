@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { useAuth } from "../../../contexts/auth";
+import { useAuth } from "../../contexts/auth";
 import { Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 

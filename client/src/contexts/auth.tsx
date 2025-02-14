@@ -23,7 +23,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     function getCookie(name: string | Record<string, any>) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
-        if (parts && parts.length === 2) return parts.pop()!.split(';').shift();
+        return parts.length === 2 ? parts[1]?.split(';')[0] ?? undefined : undefined;
     }
 
     useEffect(() => {
