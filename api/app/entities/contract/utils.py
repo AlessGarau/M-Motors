@@ -1,4 +1,5 @@
 import os
+import sys
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
@@ -83,5 +84,6 @@ def generate_contract_pdf(contract):
 
     doc.build(elements)
     print(f"✅ PDF du contrat {contract.id} généré : {file_path}")
+    sys.stdout.flush()
 
     return file_path

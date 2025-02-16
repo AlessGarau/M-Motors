@@ -2,6 +2,9 @@ from django.db import models
 from app.entities.car.models import Car
 from django.contrib.auth.models import User
 
+def contract_pdf_path(instance, filename):
+    """Génère un chemin correct pour les fichiers PDF dans MinIO."""
+    return f"contract_{instance.id}_{filename}"  # ✅ Évite le double "contracts
 
 class Contract(models.Model):
     STATUS_CHOICES = {
@@ -19,7 +22,7 @@ class Contract(models.Model):
     sav_included = models.BooleanField(default=False)
     assistance_included = models.BooleanField(default=False)
     purchase_option = models.BooleanField(default=False)
-    pdf_file = models.FileField(upload_to='contracts/', null=True, blank=True)
+    pdf_file = models.FileField(upload_to=contract_pdf_path, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
