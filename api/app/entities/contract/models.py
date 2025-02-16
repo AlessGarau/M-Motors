@@ -19,5 +19,9 @@ class Contract(models.Model):
     sav_included = models.BooleanField(default=False)
     assistance_included = models.BooleanField(default=False)
     purchase_option = models.BooleanField(default=False)
+    pdf_file = models.FileField(upload_to='contracts/', null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Contrat {self.id} - {self.user.username}"

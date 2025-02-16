@@ -1,24 +1,28 @@
 from rest_framework import viewsets, permissions
-from rest_framework.exceptions import PermissionDenied
+from django.core.files import File
 from app.entities.contract.models import Contract
-from app.entities.contract.serializer import ConctractSerializer
+from app.entities.contract.serializer import ContractSerializer
+from app.entities.contract.utils import generate_contract_pdf
+import os
 
 class ContractViewSet(viewsets.ModelViewSet):
-    queryset = Contract.objects.all()
-    serializer_class = ConctractSerializer
+    serializer_class = ContractSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        print(f"Utilisateur connecté : {user}")
-        return Contract.objects.filter(user=user)
-    
+        return Contract.objects.filter(user=self.request.user)
+
     def perform_create(self, serializer):
-        print("perform_create() appelée !")
-        print("Utilisateur authentifié :", self.request.user)
-        print("Type utilisateur :", type(self.request.user))
+        contract = serializer.save(user=self.request.user)
 
-        if self.request.user.is_anonymous:
-            raise PermissionDenied("Utilisateur non authentifié !")
+        pdf_path = generate_contract_pdf(contract)
 
-        serializer.save(user=self.request.user)
+        if not os.path.exists(pdf_path):
+            return
+
+        with open(pdf_path, "rb") as pdf_file:
+            contract.pdf_file.save(f"contract_{contract.id}.pdf", File(pdf_file))
+            contract.save()
+
+        os.remove(pdf_path)
+
