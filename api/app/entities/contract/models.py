@@ -3,8 +3,7 @@ from app.entities.car.models import Car
 from django.contrib.auth.models import User
 
 def contract_pdf_path(instance, filename):
-    """Génère un chemin correct pour les fichiers PDF dans MinIO."""
-    return f"contract_{instance.id}_{filename}"  # ✅ Évite le double "contracts
+    return f"contract_{instance.id}_{filename}"
 
 class Contract(models.Model):
     STATUS_CHOICES = {

@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-from storages.backends.s3boto3 import S3Boto3Storage
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -153,27 +153,36 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
-MEDIA_URL = 'media/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# MinIO Storage Configuration
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+STATIC_URL = 'static/'
+MEDIA_URL = 'media/'
 
-AWS_ACCESS_KEY_ID = "minioadmin"
-AWS_SECRET_ACCESS_KEY = "minioadmin"
-AWS_STORAGE_BUCKET_NAME = "contracts"
-AWS_S3_ENDPOINT_URL = "http://127.0.0.1:9000"
-AWS_S3_ADDRESSING_STYLE = "path"
-AWS_S3_REGION_NAME = "us-east-1"
-AWS_S3_CUSTOM_DOMAIN = "127.0.0.1:9000"
+# Configuration du stockage
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+    },
+}
 
+USE_S3 = os.getenv("USE_S3", "False") == "True"
 
-MEDIA_URL = f"http://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STORAGE_BUCKET_NAME}/"
+if USE_S3:
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME", "us-east-1")
+    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL", "https://s3.amazonaws.com")
+    AWS_S3_CUSTOM_DOMAIN = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+    MEDIA_URL = f"{AWS_S3_CUSTOM_DOMAIN}/"
 
-
-default_storage = S3Boto3Storage()
+else:
+    AWS_ACCESS_KEY_ID = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
+    AWS_SECRET_ACCESS_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("MINIO_BUCKET_NAME", "contracts")
+    AWS_S3_ENDPOINT_URL = os.getenv("MINIO_ENDPOINT_URL", "http://motor-m-db-minio:9000")
+    AWS_S3_CUSTOM_DOMAIN = AWS_S3_ENDPOINT_URL
+    MEDIA_URL = f"{AWS_S3_CUSTOM_DOMAIN}/{AWS_STORAGE_BUCKET_NAME}/"

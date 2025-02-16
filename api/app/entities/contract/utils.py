@@ -1,7 +1,5 @@
 import os
-import sys
 from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
@@ -83,7 +81,5 @@ def generate_contract_pdf(contract):
     elements.append(Paragraph("Représentant de l'entreprise : _________________________", styles["Normal"]))
 
     doc.build(elements)
-    print(f"✅ PDF du contrat {contract.id} généré : {file_path}")
-    sys.stdout.flush()
 
     return file_path
