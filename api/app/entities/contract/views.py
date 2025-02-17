@@ -66,7 +66,7 @@ class ContractViewSet(viewsets.ModelViewSet):
             contract.save()
 
         os.remove(pdf_path)
-    
+
     def perform_update(self, serializer):
         contract = serializer.save()
 
