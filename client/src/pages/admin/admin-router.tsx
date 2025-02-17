@@ -36,7 +36,7 @@ function AdminLayout() {
     .replace("/", " ")
     .trim();
   const displayName =
-    resourceName[0].toLocaleUpperCase() + resourceName.substring(1);
+    resourceName ? resourceName[0].toLocaleUpperCase() + resourceName.substring(1) : '';
   return (
     <>
       <SidebarProvider>
