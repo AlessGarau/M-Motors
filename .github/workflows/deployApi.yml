@@ -1,4 +1,4 @@
-name: Déploiement Continu sur Elastic Beanstalk
+name: Déploiement de l'api
 
 on:
   push:
