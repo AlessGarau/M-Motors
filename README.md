@@ -14,3 +14,7 @@ python3 manage.py runserver
 mc alias set local http://localhost:9000 minioadmin minioadmin
 mc mb local/my-local-bucket
 mc anonymous set public local/my-local-bucket
+
+## docs
+
+- https://django-filter.readthedocs.io/en/stable/guide/usage.html

@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
-    "storages"
+    "storages",
+    "django_filters"
 ]
 
 SIMPLE_JWT = {
@@ -109,12 +110,8 @@ WSGI_APPLICATION = "moters.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "admin",
-        "USER": "admin",
-        "PASSWORD": "root",
-        "HOST": "motor-m-db-db",
-        "PORT": "5432",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3", 
     }
 }
 
