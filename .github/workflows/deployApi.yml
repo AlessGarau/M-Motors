@@ -30,7 +30,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "eu-west-3"
 
+      - name: Initialisation EB CLI
+        working-directory: api
+        run: |
+          eb init -p python-3.11 m-motor-groupe6 --region eu-west-3
+
       - name: Déploiement sur Elastic Beanstalk
+        working-directory: api
         run: eb deploy m-motor-groupe6-env
         env:
           DJANGO_SETTINGS_MODULE: "moters.settings"
