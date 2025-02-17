@@ -40,9 +40,17 @@ class UserViewSet(viewsets.ModelViewSet):
                 key='access_token',
                 value=str(refresh.access_token),
                 httponly=True,
-                secure=False,  
-                samesite='Strict', 
+                secure=True,  
+                samesite='None', 
                 max_age=86400
+            )
+            response.set_cookie(
+                key='refresh_token',
+                value=str(refresh),
+                httponly=True,
+                secure=True,  
+                samesite='None',  
+                max_age=7 * 86400
             )
             return response
         else:
