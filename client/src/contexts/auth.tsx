@@ -5,8 +5,6 @@ import { createContext, useContext, useEffect, useState } from 'react';
 interface IAuthContext {
     user: Record<string, any> | null;
     setUser: (user: Record<string, any> | null) => void;
-    setToken: (token: string | null) => void;
-    token: string | null;
     isAdmin: boolean;
 }
 
@@ -18,7 +16,6 @@ const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     const [user, setUser] = useState<Record<string, any> | null>(null);
-    const [token, setToken] = useState<string | null>(null);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
     useEffect(() => {
@@ -39,7 +36,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         }
     }, []);
 
-    return <AuthContext.Provider value={{ user, setUser, token, setToken, isAdmin }}>
+    return <AuthContext.Provider value={{ user, setUser, isAdmin }}>
         {children}
     </AuthContext.Provider>
 
