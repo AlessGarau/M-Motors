@@ -28,4 +28,4 @@ class Car(models.Model):
     year = models.IntegerField()
     kilometers = models.BigIntegerField()
     price = models.IntegerField()
-    
+    image = models.ImageField(null=True, blank=True)
