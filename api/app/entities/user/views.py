@@ -40,8 +40,8 @@ class UserViewSet(viewsets.ModelViewSet):
                 key='access_token',
                 value=str(refresh.access_token),
                 httponly=True,
-                secure=False,  
-                samesite='Strict', 
+                secure=True,  
+                samesite='None', 
                 max_age=86400
             )
             return response

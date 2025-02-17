@@ -20,21 +20,12 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     const [token, setToken] = useState<string | null>(null);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
-    function getCookie(name: string | Record<string, any>) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        return parts.length === 2 ? parts[1]?.split(';')[0] ?? undefined : undefined;
-    }
-
     useEffect(() => {
-        const accessToken = getCookie('access_token');
-        if (accessToken && !user) {
+        if (!user) {
             const getUser = async () => {
                 try {
                     const response = await fetch(import.meta.env.VITE_API_URL + "user/me/", {
-                        headers: {
-                            "Authorization": `Bearer ${accessToken}`
-                        }
+                        credentials: "include",
                     });
                     const data = await response.json();
                     setUser(data.user);
