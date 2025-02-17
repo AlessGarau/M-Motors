@@ -17,7 +17,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
-        working-directory: ./client
 
       - name: Install dependencies
         run: npm install
@@ -35,9 +34,8 @@ jobs:
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --acl public-read --follow-symlinks --delete
-    env:
-      AWS_S3_BUCKET: m-motor-groupe6
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: "eu-west-3"
-      SOURCE_DIR: "./client/dist"
+          aws_s3_bucket: m-motor-groupe6
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: "eu-west-3"
+          source_dir: "./client/dist"
