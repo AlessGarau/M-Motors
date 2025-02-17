@@ -3,10 +3,10 @@ from django.db import models
 
 
 class Car(models.Model):
-    SERVICE_TYPE_CHOICES = {
-        "SALE": "Vente",
-        "RENTAL": "Location"
-    }
+    SERVICE_TYPE_CHOICES = [
+        ("SALE", "Vente"),
+        ("RENTAL", "Location"),
+    ]
     service_type = models.CharField(
         choices=SERVICE_TYPE_CHOICES,
         max_length=10,
