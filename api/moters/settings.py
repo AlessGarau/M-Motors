@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
-    "storages",
+    "storages"
 ]
 
 SIMPLE_JWT = {
