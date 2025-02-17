@@ -10,7 +10,7 @@ import {
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@radix-ui/react-separator";
 import { Outlet, useLocation } from "react-router-dom";
@@ -35,8 +35,9 @@ function AdminLayout() {
     .split("admin")?.[1]
     .replace("/", " ")
     .trim();
-  const displayName =
-    resourceName ? resourceName[0].toLocaleUpperCase() + resourceName.substring(1) : '';
+  const displayName = resourceName
+    ? resourceName[0].toLocaleUpperCase() + resourceName.substring(1)
+    : "";
   return (
     <>
       <SidebarProvider>
@@ -49,7 +50,7 @@ function AdminLayout() {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
-                    Gestion des resources M-Motors
+                    Managing M-Motors resources
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 {resourceName && resourceName != "/" && (
@@ -63,7 +64,9 @@ function AdminLayout() {
               </BreadcrumbList>
             </Breadcrumb>
           </header>
-          <Outlet />
+          <div className="p-3">
+            <Outlet />
+          </div>
         </SidebarInset>
       </SidebarProvider>
     </>
