@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
-    "storages"
+    "storages",
+    "django_filters"
 ]
 
 SIMPLE_JWT = {
