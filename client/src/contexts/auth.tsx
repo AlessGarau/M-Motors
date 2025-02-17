@@ -1,3 +1,4 @@
+import { fetchWithAuth } from '@/lib/queries';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 
@@ -24,9 +25,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         if (!user) {
             const getUser = async () => {
                 try {
-                    const response = await fetch(import.meta.env.VITE_API_URL + "user/me/", {
-                        credentials: "include",
-                    });
+                    const response = await fetchWithAuth(import.meta.env.VITE_API_URL + "user/me/");
                     const data = await response.json();
                     setUser(data.user);
                     setIsAdmin(data.user.is_admin)

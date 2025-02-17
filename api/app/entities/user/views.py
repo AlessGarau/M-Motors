@@ -44,6 +44,14 @@ class UserViewSet(viewsets.ModelViewSet):
                 samesite='None', 
                 max_age=86400
             )
+            response.set_cookie(
+                key='refresh_token',
+                value=str(refresh),
+                httponly=True,
+                secure=True,  
+                samesite='None',  
+                max_age=7 * 86400
+            )
             return response
         else:
             return Response({"error": "Login failed"}, status=status.HTTP_403_FORBIDDEN)
