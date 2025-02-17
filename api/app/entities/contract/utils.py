@@ -27,7 +27,7 @@ def generate_contract_pdf(contract):
         ["Statut", f"{dict(contract.STATUS_CHOICES).get(contract.status, 'Non spécifié')}"],
         ["Date de début", f"{contract.start_date}"],
         ["Date de fin", f"{contract.end_date}"],
-        ["Véhicule", f"{car.get_brand_display()} {car.model} - {car.year}"],
+        ["Véhicule", f"{car.brand} {car.model} - {car.year}"],
         ["Kilométrage", f"{car.kilometers} km"],
         ["Prix", f"{car.price} €"]
     ]
@@ -51,6 +51,10 @@ def generate_contract_pdf(contract):
         options.append("✔ Service Après-Vente (SAV) inclus")
     if contract.assistance_included:
         options.append("✔ Assistance 24/7 incluse")
+    if contract.assurance_included:
+        options.append("✔ Assurance tous risques incluse")
+    if contract.technical_inspection_included:
+        options.append("✔ Contrôle technique inclus")
     if contract.purchase_option:
         options.append("✔ Option d'achat disponible")
 
@@ -76,7 +80,7 @@ def generate_contract_pdf(contract):
 
     elements.append(Paragraph("<b>Signature :</b>", styles["Heading2"]))
     elements.append(Spacer(1, 50))
-    elements.append(Paragraph("Client : _________________________", styles["Normal"]))
+    elements.append(Paragraph(f"Client : {contract.user.username}", styles["Normal"]))
     elements.append(Spacer(1, 10))
     elements.append(Paragraph("Représentant de l'entreprise : _________________________", styles["Normal"]))
 

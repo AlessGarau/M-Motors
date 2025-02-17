@@ -20,6 +20,8 @@ class Contract(models.Model):
 
     sav_included = models.BooleanField(default=False)
     assistance_included = models.BooleanField(default=False)
+    assurance_included = models.BooleanField(default=False)
+    technical_inspection_included = models.BooleanField(default=False)
     purchase_option = models.BooleanField(default=False)
     pdf_file = models.FileField(upload_to=contract_pdf_path, null=True, blank=True)
 
