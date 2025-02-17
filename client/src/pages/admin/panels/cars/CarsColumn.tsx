@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Car } from "./types";
-// import { Checkbox } from "@/components/ui/checkbox";
 
 export const columns: ColumnDef<Car>[] = [
   { accessorKey: "id", header: "ID" },

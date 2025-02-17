@@ -10,6 +10,7 @@ import { List } from "../../common/list";
 import { CarListResponse } from "./types";
 import { columns } from "./CarsColumn";
 import { DataTablePagination } from "../../common/pagination";
+import { Button } from "@/components/ui/button";
 
 const fetchCarData = async (
   pageIndex: number,
@@ -18,7 +19,10 @@ const fetchCarData = async (
   const response = await fetch(
     `${import.meta.env.VITE_API_URL}car/?page=${
       pageIndex + 1
-    }&page_size=${pageSize}`
+    }&page_size=${pageSize}`,
+    {
+      credentials: 'include'
+    }
   );
   if (!response.ok) {
     throw new Error("Failed to fetch data");
@@ -34,14 +38,38 @@ function CarsPanel() {
 
   const { pageIndex, pageSize } = pagination;
 
-  const { data, error, isLoading } = useQuery<CarListResponse>({
+  const { data, error, isLoading, refetch } = useQuery<CarListResponse>({
     queryKey: ["cars", pageIndex, pageSize],
     queryFn: () => fetchCarData(pageIndex, pageSize),
   });
 
   const table = useReactTable({
     data: data?.results || [],
-    columns,
+    columns: [
+      ...columns,
+      {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => row.original.id && handleUpdate(row.original.id)}
+            >
+              Update
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => row.original.id && handleDelete(row.original.id)}
+            >
+              Delete
+            </Button>
+          </div>
+        ),
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
@@ -50,9 +78,31 @@ function CarsPanel() {
     onPaginationChange: setPagination,
   });
 
+  const handleDelete = async (id: number) => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}car/${id}/`, {
+        method: "DELETE",
+        credentials: 'include'
+      });
+      refetch();
+    } catch (error) {
+      console.error("Failed to delete", error);
+    }
+  };
+
+  const handleUpdate = (id: number) => {
+    console.log(`Update item with ID: ${id}`);
+    // TODO: Open a modal for updating
+  };
+
+  const handleCreate = () => {
+    console.log("Open Create Modal");
+    // TODO: Open a modal for creating
+  };
+
   return (
     <div>
-      <h1 className="text-xl font-bold pb-3">List</h1>
+      <h1 className="text-xl font-bold pb-3">Cars List</h1>
 
       {isLoading && (
         <div className="flex justify-center items-center">
