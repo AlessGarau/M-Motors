@@ -1,11 +1,10 @@
+import { fetchWithAuth } from '@/lib/queries';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 
 interface IAuthContext {
     user: Record<string, any> | null;
     setUser: (user: Record<string, any> | null) => void;
-    setToken: (token: string | null) => void;
-    token: string | null;
     isAdmin: boolean;
 }
 
@@ -17,25 +16,13 @@ const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     const [user, setUser] = useState<Record<string, any> | null>(null);
-    const [token, setToken] = useState<string | null>(null);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
-    function getCookie(name: string | Record<string, any>) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        return parts.length === 2 ? parts[1]?.split(';')[0] ?? undefined : undefined;
-    }
-
     useEffect(() => {
-        const accessToken = getCookie('access_token');
-        if (accessToken && !user) {
+        if (!user) {
             const getUser = async () => {
                 try {
-                    const response = await fetch(import.meta.env.VITE_API_URL + "user/me/", {
-                        headers: {
-                            "Authorization": `Bearer ${accessToken}`
-                        }
-                    });
+                    const response = await fetchWithAuth(import.meta.env.VITE_API_URL + "user/me/");
                     const data = await response.json();
                     setUser(data.user);
                     setIsAdmin(data.user.is_admin)
@@ -49,7 +36,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         }
     }, []);
 
-    return <AuthContext.Provider value={{ user, setUser, token, setToken, isAdmin }}>
+    return <AuthContext.Provider value={{ user, setUser, isAdmin }}>
         {children}
     </AuthContext.Provider>
 
