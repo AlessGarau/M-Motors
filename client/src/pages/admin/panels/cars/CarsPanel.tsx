@@ -12,6 +12,7 @@ import { columns } from "./CarsColumn";
 import { DataTablePagination } from "../../common/pagination";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
+import { fetchWithAuth } from "@/lib/queries";
 
 const fetchCarData = async (
   pageIndex: number,
@@ -22,7 +23,7 @@ const fetchCarData = async (
       pageIndex + 1
     }&page_size=${pageSize}`,
     {
-      credentials: 'include'
+      credentials: "include",
     }
   );
   if (!response.ok) {
@@ -36,7 +37,7 @@ function CarsPanel() {
     pageIndex: 0,
     pageSize: 10,
   });
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { pageIndex, pageSize } = pagination;
 
@@ -82,9 +83,9 @@ function CarsPanel() {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}car/${id}/`, {
+      await fetchWithAuth(`${import.meta.env.VITE_API_URL}car/${id}/`, {
         method: "DELETE",
-        credentials: 'include'
+        credentials: "include",
       });
       refetch();
     } catch (error) {
@@ -93,18 +94,20 @@ function CarsPanel() {
   };
 
   const handleUpdate = (id: number) => {
-    console.log(`Update item with ID: ${id}`);
-    navigate("/admin/cars/update/" + id)
+    navigate("/admin/cars/update/" + id);
   };
 
   const handleCreate = () => {
-    console.log("Open Create Modal");
-    // TODO: Open a modal for creating
+    navigate("/admin/cars/create/");
   };
 
   return (
     <div>
-      <h1 className="text-xl font-bold pb-3">Cars List</h1>
+      <div className=" pb-3">
+        <Button onClick={handleCreate} className="">
+          Create
+        </Button>
+      </div>
 
       {isLoading && (
         <div className="flex justify-center items-center">

@@ -32,6 +32,10 @@ export const adminRouter = [
         path: "cars/update/:id",
         element: <CarsForm />,
       },
+      {
+        path: "cars/create",
+        element: <CarsForm />
+      }
     ],
   },
 ];

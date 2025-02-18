@@ -1,3 +1,4 @@
+// Import necessary hooks and components
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -15,6 +16,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { fetchWithAuth } from "@/lib/queries";
 
 const fetchCarById = async (id: string) => {
   const response = await fetch(`${import.meta.env.VITE_API_URL}car/${id}/`);
@@ -29,7 +31,7 @@ const saveCar = async (formData: FormData, id?: string) => {
     ? `${import.meta.env.VITE_API_URL}car/${id}/`
     : `${import.meta.env.VITE_API_URL}car/`;
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: id ? "PUT" : "POST",
     body: formData,
   });
@@ -45,6 +47,7 @@ export default function CarsForm() {
   const { id } = useParams<{ id: string }>();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
+
   const {
     register,
     handleSubmit,
@@ -59,7 +62,7 @@ export default function CarsForm() {
       year: "",
       kilometers: "",
       price: "",
-      image: {},
+      image: null,
     },
   });
 
@@ -72,13 +75,15 @@ export default function CarsForm() {
   useEffect(() => {
     if (isSuccess) {
       Object.keys(data).forEach((key) => setValue(key as any, data[key]));
+      if (data.image) {
+        setImagePreview(data.image);
+      }
     }
   }, [isSuccess]);
 
   const mutation = useMutation({
     mutationFn: (formData: FormData) => saveCar(formData, id),
     onSuccess: () => {
-      alert();
       toast({
         description: id
           ? "Car updated successfully!"
@@ -89,7 +94,7 @@ export default function CarsForm() {
     onError: () => {
       toast({
         title: "Please try again.",
-        description: "Failed to save car. ",
+        description: "Failed to save car.",
         variant: "destructive",
       });
     },
@@ -111,7 +116,7 @@ export default function CarsForm() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setValue("image", file);
+      setValue("image", file as any);
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -206,12 +211,17 @@ export default function CarsForm() {
         <div>
           <Label>Car Image</Label>
           <Input type="file" accept="image/*" onChange={handleImageChange} />
+
+          {/* Show current image if available */}
           {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="Car Preview"
-              className="mt-2 h-32 object-cover rounded-lg"
-            />
+            <div className="mt-2">
+              <p className="text-gray-500 text-sm">Current Image:</p>
+              <img
+                src={imagePreview}
+                alt="Car"
+                className="mt-2 h-32 object-cover rounded-lg border"
+              />
+            </div>
           )}
         </div>
 
