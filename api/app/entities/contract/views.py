@@ -1,16 +1,20 @@
 from rest_framework import viewsets, permissions, status
+from django_filters.rest_framework import DjangoFilterBackend
 from django.core.files import File
 from app.entities.contract.models import Contract
 from app.entities.contract.serializer import ContractSerializer
 from app.entities.contract.utils import generate_contract_pdf
 from rest_framework.response import Response
 from django.http import FileResponse
+from app.entities.contract.filters import ContractFilter 
 from rest_framework.decorators import action
 import os
 
 class ContractViewSet(viewsets.ModelViewSet):
     serializer_class = ContractSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ContractFilter
 
     def get_permissions(self):
         if self.action == 'destroy':
@@ -23,17 +27,22 @@ class ContractViewSet(viewsets.ModelViewSet):
             return [permissions.IsAuthenticated()]
         return super().get_permissions()
 
-    def retrieve(self, _request, pk=None):
+    def retrieve(self, request, pk=None):
         try:
             contract = Contract.objects.get(pk=pk)
+
+            if not request.user.profile.is_admin and contract.user != request.user:
+                return Response({"error": "You do not have permission to view this contract."},status=status.HTTP_403_FORBIDDEN)
+
             serializer = self.get_serializer(contract)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
         except Contract.DoesNotExist:
             return Response({"error": "Contract not found"}, status=status.HTTP_404_NOT_FOUND)
 
     def get_queryset(self):
-        if hasattr(self.request.user, "profile") and self.request.user.profile.is_admin:
-            return Contract.objects.all()
+        # if hasattr(self.request.user, "profile") and self.request.user.profile.is_admin:
+        #     return Contract.objects.all()
         return Contract.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
