@@ -30,8 +30,6 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 
-# Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -44,7 +42,8 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "storages",
-    "django_filters"
+    "django_filters",
+    "rest_framework.authtoken"
 ]
 
 SIMPLE_JWT = {
@@ -59,7 +58,8 @@ SIMPLE_JWT = {
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "app.authentication.CookieJWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication", 
+        "rest_framework.authentication.SessionAuthentication", 
     ),
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_PAGINATION_CLASS": ("rest_framework.pagination.PageNumberPagination"),
