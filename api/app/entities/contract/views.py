@@ -1,61 +1,43 @@
 from rest_framework import viewsets, permissions, status
 from django.core.files import File
 from app.entities.contract.models import Contract
-from rest_framework.decorators import action
 from app.entities.contract.serializer import ContractSerializer
 from app.entities.contract.utils import generate_contract_pdf
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from django.http import FileResponse
+from rest_framework.decorators import action
 import os
 
 class ContractViewSet(viewsets.ModelViewSet):
     serializer_class = ContractSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
-    def all(self, request):
-        user = request.user
-        if not user.profile.is_admin:
-            return Response({"error": "You are not an admin"}, status=403)
+    def get_permissions(self):
+        if self.action == 'destroy':
+            return [permissions.IsAuthenticated()]
+        elif self.action == 'list':
+            return [permissions.IsAuthenticated()]
+        elif self.action == 'partial_update':
+            return [permissions.IsAuthenticated()]
+        elif self.action in ['retrieve', 'download_contract']:
+            return [permissions.IsAuthenticated()]
+        return super().get_permissions()
 
-        contracts = Contract.objects.all()
-        serializer = self.get_serializer(contracts, many=True)
-        return Response({"count": len(contracts), "all_contracts": serializer.data}, status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=["get", "patch", "delete"], url_path="all/(?P<id_contract>[^/.]+)", permission_classes=[IsAuthenticated])
-    def get_contract(self, request, id_contract):
-        user = request.user
-        if not user.profile.is_admin:
-            return Response({"error": "You are not an admin"}, status=status.HTTP_403_FORBIDDEN)
-
+    def retrieve(self, _request, pk=None):
         try:
-            contract = Contract.objects.get(id=id_contract)
-            if request.method == "PATCH":
-                contract_status = request.data.get("status").upper()
-                if contract_status is not None:
-                    if contract_status not in Contract.STATUS_CHOICES:
-                        return Response(
-                            {"error": f"Invalid status. Must be one of {list(Contract.STATUS_CHOICES.keys())}"},
-                            status=status.HTTP_400_BAD_REQUEST
-                        )
-                    contract.status = contract_status
-                    contract.save()
-            elif request.method == "DELETE":
-                contract.pdf_file.delete()
-                contract.delete()
-                return Response({"message": "Contract deleted"}, status=status.HTTP_200_OK)
-
+            contract = Contract.objects.get(pk=pk)
             serializer = self.get_serializer(contract)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Contract.DoesNotExist:
             return Response({"error": "Contract not found"}, status=status.HTTP_404_NOT_FOUND)
 
     def get_queryset(self):
+        if hasattr(self.request.user, "profile") and self.request.user.profile.is_admin:
+            return Contract.objects.all()
         return Contract.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         contract = serializer.save()
-
         pdf_path = generate_contract_pdf(contract)
 
         if not os.path.exists(pdf_path):
@@ -64,26 +46,67 @@ class ContractViewSet(viewsets.ModelViewSet):
         with open(pdf_path, "rb") as pdf_file:
             contract.pdf_file.save(f"contract_{contract.id}.pdf", File(pdf_file))
             contract.save()
-
         os.remove(pdf_path)
 
-    def perform_update(self, serializer):
-        contract = serializer.save()
+    def partial_update(self, request, pk=None):
+        """Permet à un utilisateur de modifier son propre contrat, mais seul un admin peut modifier le statut"""
+        try:
+            contract = Contract.objects.get(pk=pk)
 
-        pdf_path = generate_contract_pdf(contract)
+            if not request.user.profile.is_admin and contract.user != request.user:
+                return Response({"error": "You do not have permission to modify this contract."},
+                                status=status.HTTP_403_FORBIDDEN)
+        except Contract.DoesNotExist:
+            return Response({"error": "Contract not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        if not os.path.exists(pdf_path):
-            return
+        allowed_fields = ["start_date", "end_date"]
+        if request.user.profile.is_admin:
+            allowed_fields.append("status")
 
-        with open(pdf_path, "rb") as pdf_file:
-            contract.pdf_file.save(f"contract_{contract.id}.pdf", File(pdf_file))
-            contract.save()
+        update_data = {key: value for key, value in request.data.items() if key in allowed_fields}
 
-        os.remove(pdf_path)
+        if "status" in request.data and not request.user.profile.is_admin:
+            return Response({"error": "Only admins can modify the contract status."},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(contract, data=update_data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            if contract.pdf_file:
+                contract.pdf_file.delete(save=False)
+            pdf_path = generate_contract_pdf(contract)
+
+            if os.path.exists(pdf_path):
+                with open(pdf_path, "rb") as pdf_file:
+                    contract.pdf_file.save(f"contract_{contract.id}.pdf", File(pdf_file))
+                    contract.save()
+                os.remove(pdf_path)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def perform_destroy(self, instance):
         if instance.pdf_file:
             instance.pdf_file.delete()
         instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=["get"], url_path="download")
+    def download_contract(self, request, pk=None):
+        try:
+            contract = Contract.objects.get(pk=pk)
+            if not request.user.profile.is_admin and contract.user != request.user:
+                return Response(
+                    {"error": "You do not have permission to download this contract."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            if not contract.pdf_file or not contract.pdf_file.name:
+                return Response(
+                    {"error": "Contract PDF not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            response = FileResponse(contract.pdf_file, as_attachment=True, filename=f"contract_{contract.id}.pdf")
+            return response
+        except Contract.DoesNotExist:
+            return Response({"error": "Contract not found"}, status=status.HTTP_404_NOT_FOUND)
