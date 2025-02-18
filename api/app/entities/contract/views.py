@@ -27,23 +27,25 @@ class ContractViewSet(viewsets.ModelViewSet):
             return [permissions.IsAuthenticated()]
         return super().get_permissions()
 
+    def get_queryset(self):
+            return Contract.objects.filter(user=self.request.user)
+
     def retrieve(self, request, pk=None):
         try:
-            contract = Contract.objects.get(pk=pk)
+            user = request.user
+            is_admin = hasattr(user, "profile") and user.profile.is_admin
+            show_admin = request.query_params.get("admin", "false").lower() == "true"
 
-            if not request.user.profile.is_admin and contract.user != request.user:
-                return Response({"error": "You do not have permission to view this contract."},status=status.HTTP_403_FORBIDDEN)
+            if is_admin and show_admin:
+                contract = Contract.objects.get(pk=pk)
+            else:
+                contract = Contract.objects.get(pk=pk, user=user)
 
             serializer = self.get_serializer(contract)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Contract.DoesNotExist:
             return Response({"error": "Contract not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    def get_queryset(self):
-        # if hasattr(self.request.user, "profile") and self.request.user.profile.is_admin:
-        #     return Contract.objects.all()
-        return Contract.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         contract = serializer.save()
@@ -94,7 +96,6 @@ class ContractViewSet(viewsets.ModelViewSet):
                 os.remove(pdf_path)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def perform_destroy(self, instance):
         if instance.pdf_file:
