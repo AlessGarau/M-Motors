@@ -15,6 +15,8 @@ import {
 import { Separator } from "@radix-ui/react-separator";
 import { Outlet, useLocation } from "react-router-dom";
 import CarsPanel from "./panels/cars/CarsPanel";
+import CarsForm from "./panels/cars/CarsForm";
+import { Toaster } from "@/components/ui/toaster";
 
 export const adminRouter = [
   {
@@ -24,6 +26,11 @@ export const adminRouter = [
       {
         path: "cars",
         element: <CarsPanel />,
+        children: [],
+      },
+      {
+        path: "cars/update/:id",
+        element: <CarsForm />,
       },
     ],
   },
@@ -34,7 +41,9 @@ function AdminLayout() {
   const resourceName = location.pathname
     .split("admin")?.[1]
     .replace("/", " ")
-    .trim();
+    .trim()
+    .split("/")
+    .join(" ");
   const displayName = resourceName
     ? resourceName[0].toLocaleUpperCase() + resourceName.substring(1)
     : "";
@@ -69,6 +78,7 @@ function AdminLayout() {
           </div>
         </SidebarInset>
       </SidebarProvider>
+      <Toaster />
     </>
   );
 }

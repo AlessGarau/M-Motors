@@ -11,6 +11,7 @@ import { CarListResponse } from "./types";
 import { columns } from "./CarsColumn";
 import { DataTablePagination } from "../../common/pagination";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 const fetchCarData = async (
   pageIndex: number,
@@ -35,6 +36,7 @@ function CarsPanel() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const navigate = useNavigate()
 
   const { pageIndex, pageSize } = pagination;
 
@@ -92,7 +94,7 @@ function CarsPanel() {
 
   const handleUpdate = (id: number) => {
     console.log(`Update item with ID: ${id}`);
-    // TODO: Open a modal for updating
+    navigate("/admin/cars/update/" + id)
   };
 
   const handleCreate = () => {

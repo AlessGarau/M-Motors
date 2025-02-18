@@ -36,14 +36,14 @@ const data: { navMain: navItem[] } = {
       url: "#",
       isActive: true,
       items: [
-        { title: "Cars", url: "cars" },
+        { title: "Cars", url: "/admin/cars" },
       ],
     },
     {
       title: "Clients",
       url: "#",
       items: [
-        { title: "Contracts", url: "contracts" },
+        { title: "Contracts", url: "/admin/contracts" },
       ]
     }
   ],
