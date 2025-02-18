@@ -7,5 +7,5 @@ export async function fetchWithAuth(url: string, options = {}) {
         },
     });
 
-    return response.json();
+    return response;
 }

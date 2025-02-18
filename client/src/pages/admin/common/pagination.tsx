@@ -1,36 +1,3 @@
-// import { Button } from "@/components/ui/button"; // Assuming shadcn has a Button component
-// import { ListResponse } from "./types";
-
-// // Assuming ListResponse is already imported
-// type PaginationProps<T> = {
-//   data?: ListResponse<T>;
-//   setPageUrl: (url: string | null) => void;
-// };
-
-// const Pagination = <T extends {}>({ data, setPageUrl }: PaginationProps<T>) => {
-//   return (
-//     <div className="flex justify-between mt-4">
-//       <Button
-//         disabled={!data?.previous}
-//         onClick={() => setPageUrl(data?.previous || null)}
-//         className="p-2 border rounded disabled:opacity-50"
-//       >
-//         Previous
-//       </Button>
-
-//       <Button
-//         disabled={!data?.next}
-//         onClick={() => setPageUrl(data?.next || null)}
-//         className="p-2 border rounded disabled:opacity-50"
-//       >
-//         Next
-//       </Button>
-//     </div>
-//   );
-// };
-
-// export default Pagination;
-
 import { Table } from "@tanstack/react-table";
 import {
   ChevronLeft,
@@ -50,24 +17,24 @@ import {
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
+  setPagination: (updater: (prev: { pageIndex: number; pageSize: number }) => { pageIndex: number; pageSize: number }) => void;
 }
 
-export function DataTablePagination<TData>({
-  table,
-}: DataTablePaginationProps<TData>) {
+export function DataTablePagination<TData>({ table, setPagination }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
-      </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
+      <div className="flex py-1 items-center space-x-6 lg:space-x-8">
+        {/* Rows per page selector */}
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
-              table.setPageSize(Number(value));
+              const newSize = Number(value);
+              setPagination((prev) => ({
+                pageIndex: 0,
+                pageSize: newSize,
+              }));
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
@@ -82,10 +49,13 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
+
+        {/* Page indicator */}
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
+          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
+
+        {/* Pagination controls */}
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
