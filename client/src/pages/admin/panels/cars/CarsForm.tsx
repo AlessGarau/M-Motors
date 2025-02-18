@@ -52,7 +52,6 @@ export default function CarsForm() {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {

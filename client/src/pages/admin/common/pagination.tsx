@@ -31,7 +31,7 @@ export function DataTablePagination<TData>({ table, setPagination }: DataTablePa
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
               const newSize = Number(value);
-              setPagination((prev) => ({
+              setPagination((_) => ({
                 pageIndex: 0,
                 pageSize: newSize,
               }));
