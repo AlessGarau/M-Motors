@@ -46,6 +46,7 @@ services:
       - POSTGRES_DB=admin
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=root
+      - POSTGRES_HOST=motor-m-db-db
     volumes:
       - ../api:/app/api
       - /app/api/__pycache__
