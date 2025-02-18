@@ -164,19 +164,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-STATIC_URL = 'static/'  
+STATIC_URL = 'static/'
 MEDIA_URL = 'media/'
 
+# Configuration du stockage
 STORAGES = {
     "default": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     },
     "staticfiles": {
         "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
@@ -190,15 +186,14 @@ if USE_S3:
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
     AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME", "us-east-1")
-    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL", "https://s3.amazonaws.com")
+    AWS_S3_CUSTOM_DOMAIN = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+    MEDIA_URL = f"{AWS_S3_CUSTOM_DOMAIN}/"
+
 else:
-    AWS_ACCESS_KEY_ID = os.getenv("MINIO_ACCESS_KEY")
-    AWS_SECRET_ACCESS_KEY = os.getenv("MINIO_SECRET_KEY")
-    AWS_STORAGE_BUCKET_NAME = "my-local-bucket"
-    AWS_S3_ENDPOINT_URL = "http://motor-m-db-minio:9000"  # MinIO URL
-    AWS_S3_CUSTOM_DOMAIN = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}"
-    MEDIA_URL = f"{AWS_S3_CUSTOM_DOMAIN}/"    
-
-
-
+    AWS_ACCESS_KEY_ID = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
+    AWS_SECRET_ACCESS_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("MINIO_BUCKET_NAME", "contracts")
+    AWS_S3_ENDPOINT_URL = os.getenv("MINIO_ENDPOINT_URL", "http://motor-m-db-minio:9000")
+    AWS_S3_CUSTOM_DOMAIN = AWS_S3_ENDPOINT_URL
+    MEDIA_URL = f"{AWS_S3_CUSTOM_DOMAIN}/{AWS_STORAGE_BUCKET_NAME}/"
