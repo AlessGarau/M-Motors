@@ -24,6 +24,7 @@ const LoginForm = () => {
 
             const data = await response.json();
             if (!response.ok) throw new Error(data.detail || "Login failed");
+            localStorage.setItem("token", data.token);
             auth.setUser(data.user);
             navigate("/")
         } catch (error) {
