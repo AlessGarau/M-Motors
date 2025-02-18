@@ -17,11 +17,7 @@ class ContractViewSet(viewsets.ModelViewSet):
     filterset_class = ContractFilter
 
     def get_permissions(self):
-        if self.action == 'destroy':
-            return [permissions.IsAuthenticated()]
-        elif self.action == 'list':
-            return [permissions.IsAuthenticated()]
-        elif self.action == 'partial_update':
+        if self.action in ['destroy', 'list', 'partial_update', 'update']:
             return [permissions.IsAuthenticated()]
         elif self.action in ['retrieve', 'download_contract']:
             return [permissions.IsAuthenticated()]
@@ -59,48 +55,40 @@ class ContractViewSet(viewsets.ModelViewSet):
             contract.save()
         os.remove(pdf_path)
 
-    def partial_update(self, request, pk=None):
-        """Permet à un utilisateur de modifier son propre contrat, mais seul un admin peut modifier le statut"""
-        try:
-            contract = Contract.objects.get(pk=pk)
-
-            if not request.user.profile.is_admin and contract.user != request.user:
-                return Response({"error": "You do not have permission to modify this contract."},
-                                status=status.HTTP_403_FORBIDDEN)
-        except Contract.DoesNotExist:
-            return Response({"error": "Contract not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        allowed_fields = ["start_date", "end_date"]
-        if request.user.profile.is_admin:
-            allowed_fields.append("status")
-
-        update_data = {key: value for key, value in request.data.items() if key in allowed_fields}
-
-        if "status" in request.data and not request.user.profile.is_admin:
-            return Response({"error": "Only admins can modify the contract status."},
-                            status=status.HTTP_403_FORBIDDEN)
-
-        serializer = self.get_serializer(contract, data=update_data, partial=True)
-
-        if serializer.is_valid():
-            serializer.save()
-
-            if contract.pdf_file:
-                contract.pdf_file.delete(save=False)
-            pdf_path = generate_contract_pdf(contract)
-
-            if os.path.exists(pdf_path):
-                with open(pdf_path, "rb") as pdf_file:
-                    contract.pdf_file.save(f"contract_{contract.id}.pdf", File(pdf_file))
-                    contract.save()
-                os.remove(pdf_path)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     def perform_destroy(self, instance):
         if instance.pdf_file:
             instance.pdf_file.delete()
         instance.delete()
+
+    def update(self, request, *args, **kwargs):
+        restricted_fields = {"id", "status", "created_at", "user", "pdf_file"}
+        data = request.data.copy()
+
+        invalid_fields = restricted_fields.intersection(data.keys())
+        if invalid_fields:
+            return Response({"error": f"You cannot modify these fields: {', '.join(invalid_fields)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        instance = self.get_object()
+
+        if instance.user != request.user:
+            return Response({"error": "You do not have permission to modify this contract."},status=status.HTTP_403_FORBIDDEN)
+
+        response = super().update(request, *args, **kwargs)
+        instance.refresh_from_db()
+        new_pdf_path = generate_contract_pdf(instance)
+
+        if not os.path.exists(new_pdf_path):
+            return response
+
+        if instance.pdf_file:
+            instance.pdf_file.delete()
+
+        with open(new_pdf_path, "rb") as pdf_file:
+            instance.pdf_file.save(f"contract_{instance.id}.pdf", File(pdf_file))
+            instance.save()
+        os.remove(new_pdf_path)
+
+        return response
 
     @action(detail=True, methods=["get"], url_path="download")
     def download_contract(self, request, pk=None):
