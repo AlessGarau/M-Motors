@@ -40,3 +40,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "eu-west-3"
           SOURCE_DIR: "./client/dist"
+          VITE_API_URL: "http://m-motor-groupe6-env.eba-mqppe5nb.eu-west-3.elasticbeanstalk.com/api/"
