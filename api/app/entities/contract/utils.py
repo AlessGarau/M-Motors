@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
@@ -30,8 +31,8 @@ def generate_contract_pdf(contract):
         ["Véhicule", f"{car.brand} {car.model} - {car.year}"],
         ["Kilométrage", f"{car.kilometers} km"],
         ["Prix", f"{car.price} €"],
-        ["Date de création", f"{contract.created_at}"],
-        ["Date de modification", f"{contract.updated_date}"]
+        ["Date de création", f"Le {contract.created_at.strftime('%Y/%m/%d')} à {contract.created_at.strftime('%Hh%M')}"],
+        ["Dernière modification", f"Le {contract.updated_date.strftime('%Y/%m/%d')} à {contract.updated_date.strftime('%Hh%M')}"]
     ]
 
     table = Table(details, colWidths=[150, 300])
