@@ -124,7 +124,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": "hetic.cd5ufp6fsve3.us-east-1.rds.amazonaws.com",
+        "HOST": os.getenv("POSTGRES_HOST"),
         "PORT": "5432",
     }
 }
