@@ -17,6 +17,8 @@ import { Outlet, useLocation } from "react-router-dom";
 import CarsPanel from "./panels/cars/CarsPanel";
 import CarsForm from "./panels/cars/CarsForm";
 import { Toaster } from "@/components/ui/toaster";
+import ContractsPanel from "./panels/contracts/ContractsPanel";
+import ContractsForm from "./panels/contracts/ContractsForm";
 
 export const adminRouter = [
   {
@@ -26,7 +28,6 @@ export const adminRouter = [
       {
         path: "cars",
         element: <CarsPanel />,
-        children: [],
       },
       {
         path: "cars/update/:id",
@@ -34,8 +35,16 @@ export const adminRouter = [
       },
       {
         path: "cars/create",
-        element: <CarsForm />
-      }
+        element: <CarsForm />,
+      },
+      {
+        path: "contracts",
+        element: <ContractsPanel />,
+      },
+      {
+        path: "cars/update/:id",
+        element: <ContractsForm />,
+      },
     ],
   },
 ];
