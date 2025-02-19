@@ -25,31 +25,33 @@ export const adminRouter = [
   {
     element: <ProtectedRoute />,
     children: [
-    {path: "admin",
-    element: <AdminLayout />,
-    children: [
       {
-        path: "cars",
-        element: <CarsPanel />,
-      },
-      {
-        path: "cars/update/:id",
-        element: <CarsForm />,
-      },
-      {
-        path: "cars/create",
-        element: <CarsForm />,
-      },
-      {
-        path: "contracts",
-        element: <ContractsPanel />,
-      },
-      {
-        path: "cars/update/:id",
-        element: <ContractsForm />,
-      },
-    ],
-  },]}
+        path: "admin",
+        element: <AdminLayout />,
+        children: [
+          {
+            path: "cars",
+            element: <CarsPanel />,
+          },
+          {
+            path: "cars/update/:id",
+            element: <CarsForm />,
+          },
+          {
+            path: "cars/create",
+            element: <CarsForm />,
+          },
+          {
+            path: "contracts",
+            element: <ContractsPanel />,
+          },
+          {
+            path: "cars/update/:id",
+            element: <ContractsForm />,
+          },
+        ],
+      },]
+  }
 ];
 
 function AdminLayout() {
