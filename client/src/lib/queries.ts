@@ -1,21 +1,11 @@
 export async function fetchWithAuth(url: string, options = {}) {
-    let response = await fetch(url, {
+    const token = localStorage.getItem("token");
+    const response = await fetch(url, {
         ...options,
-        credentials: "include",
+        headers: {
+           "Authorization": `Token ${token}`
+        },
     });
 
-    if (response.status === 401) {
-        await fetch(import.meta.env.VITE_API_URL 
-            + "token/refresh/", {
-            method: "POST",
-            credentials: "include",
-        });
-
-        response = await fetch(url, {
-            ...options,
-            credentials: "include",
-        });
-    }
-
-    return response.json();
+    return response;
 }

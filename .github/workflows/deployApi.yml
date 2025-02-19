@@ -35,8 +35,18 @@ jobs:
         run: |
           eb init -p python-3.11 m-motor-groupe6 --region eu-west-3
 
+      - name: Vérification de l'état Elastic Beanstalk
+        working-directory: api
+        run: |
+          eb status
+
       - name: Déploiement sur Elastic Beanstalk
         working-directory: api
         run: eb deploy m-motor-groupe6-env
-        env:
-          DJANGO_SETTINGS_MODULE: "moters.settings"
+        env: 
+          DJANGO_SETTINGS_MODULE: moters.settings
+
+      - name: Run Django Migrations
+        working-directory: api
+        run: eb ssh m-motor-groupe6-env --command "source /var/app/venv/staging-LONGBRANCH/bin/activate && python manage.py migrate"
+

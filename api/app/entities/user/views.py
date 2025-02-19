@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.authtoken.models import Token
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -26,32 +27,15 @@ class UserViewSet(viewsets.ModelViewSet):
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
         if user:
-            refresh = RefreshToken.for_user(user)
+            token, created = Token.objects.get_or_create(user=user)
             response = Response({
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
+                "token": token.key,
                 "user": {
                     "id": user.id,
                     "username": user.username,
                     "email": user.email
                 }
             })
-            response.set_cookie(
-                key='access_token',
-                value=str(refresh.access_token),
-                httponly=True,
-                secure=True,  
-                samesite='None', 
-                max_age=86400
-            )
-            response.set_cookie(
-                key='refresh_token',
-                value=str(refresh),
-                httponly=True,
-                secure=True,  
-                samesite='None',  
-                max_age=7 * 86400
-            )
             return response
         else:
             return Response({"error": "Login failed"}, status=status.HTTP_403_FORBIDDEN)

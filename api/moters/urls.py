@@ -1,8 +1,9 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
+    TokenRefreshView,
 )
-from app.entities.token.views import CookieTokenRefreshView
+from rest_framework.authtoken.views import obtain_auth_token
 
 """
 URL configuration for moters project.
@@ -29,8 +30,7 @@ router = DefaultRouter()
 urlpatterns = [
     path('api/', include('app.urls')),
     path('admin/', admin.site.urls),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', CookieTokenRefreshView.as_view(), name='token_refresh'),
+    path("api/token/", obtain_auth_token, name="api_token_auth"),
 ]
 
 

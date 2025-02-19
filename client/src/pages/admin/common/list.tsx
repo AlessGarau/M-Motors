@@ -1,11 +1,3 @@
-// import {
-//   ColumnDef,
-//   flexRender,
-//   getCoreRowModel,
-//   getPaginationRowModel,
-//   useReactTable,
-// } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -14,17 +6,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  flexRender,
+  useReactTable,
+} from "@tanstack/react-table";
 
-export function List<T>({ data, columns }: { data: T[], columns: ColumnDef<T>[] }) {
-  const table = useReactTable({
-    data: data || [],
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
-
-
+export function List<T>({
+  table,
+}: {
+  table: ReturnType<typeof useReactTable<T>>;
+}) {
   return (
     <div className="rounded-md border">
       <Table>
@@ -35,14 +26,17 @@ export function List<T>({ data, columns }: { data: T[], columns: ColumnDef<T>[] 
                 <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                 </TableHead>
               ))}
             </TableRow>
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
@@ -54,7 +48,10 @@ export function List<T>({ data, columns }: { data: T[], columns: ColumnDef<T>[] 
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell
+                colSpan={table.getAllColumns().length}
+                className="h-24 text-center"
+              >
                 No results.
               </TableCell>
             </TableRow>

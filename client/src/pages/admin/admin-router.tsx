@@ -10,11 +10,15 @@ import {
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@radix-ui/react-separator";
 import { Outlet, useLocation } from "react-router-dom";
 import CarsPanel from "./panels/cars/CarsPanel";
+import CarsForm from "./panels/cars/CarsForm";
+import { Toaster } from "@/components/ui/toaster";
+import ContractsPanel from "./panels/contracts/ContractsPanel";
+import ContractsForm from "./panels/contracts/ContractsForm";
 
 export const adminRouter = [
   {
@@ -25,6 +29,22 @@ export const adminRouter = [
         path: "cars",
         element: <CarsPanel />,
       },
+      {
+        path: "cars/update/:id",
+        element: <CarsForm />,
+      },
+      {
+        path: "cars/create",
+        element: <CarsForm />,
+      },
+      {
+        path: "contracts",
+        element: <ContractsPanel />,
+      },
+      {
+        path: "cars/update/:id",
+        element: <ContractsForm />,
+      },
     ],
   },
 ];
@@ -34,9 +54,12 @@ function AdminLayout() {
   const resourceName = location.pathname
     .split("admin")?.[1]
     .replace("/", " ")
-    .trim();
-  const displayName =
-    resourceName[0].toLocaleUpperCase() + resourceName.substring(1);
+    .trim()
+    .split("/")
+    .join(" ");
+  const displayName = resourceName
+    ? resourceName[0].toLocaleUpperCase() + resourceName.substring(1)
+    : "";
   return (
     <>
       <SidebarProvider>
@@ -49,7 +72,7 @@ function AdminLayout() {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
-                    Gestion des resources M-Motors
+                    Managing M-Motors resources
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 {resourceName && resourceName != "/" && (
@@ -63,9 +86,12 @@ function AdminLayout() {
               </BreadcrumbList>
             </Breadcrumb>
           </header>
-          <Outlet />
+          <div className="p-3">
+            <Outlet />
+          </div>
         </SidebarInset>
       </SidebarProvider>
+      <Toaster />
     </>
   );
 }

@@ -36,16 +36,10 @@ services:
       dockerfile: Docker/Dockerfile.api
     networks:
       - motor-m-network
+    env_file: ../api/.env
     ports:
       - "8001:8001"
     command: sh -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8001"
-    environment:
-      - MINIO_ENDPOINT=http://minio:9000
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin
-      - POSTGRES_DB=admin
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=root
     volumes:
       - ../api:/app/api
       - /app/api/__pycache__
