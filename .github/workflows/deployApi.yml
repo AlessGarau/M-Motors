@@ -52,3 +52,8 @@ jobs:
       - name: Déploiement sur Elastic Beanstalk
         working-directory: api
         run: eb deploy
+
+      - name: Run Django Migrations
+        working-directory: api
+        run: eb ssh m-motor-groupe6-env --command "source /var/app/venv/staging-LONGBRANCH/bin/activate && python manage.py migrate"
+
