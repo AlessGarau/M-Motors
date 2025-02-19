@@ -27,7 +27,9 @@ jobs:
       #   working-directory: ./client
 
       - name: Build
-        run: npm run build
+        run: |
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > ./client/.env
+          npm run build
         working-directory: ./client
 
       - name: Deploy to S3
@@ -40,4 +42,3 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "eu-west-3"
           SOURCE_DIR: "./client/dist"
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
