@@ -1,4 +1,4 @@
-import { ListResponse } from "../../common/types";
+import { InfiniteQueryResponse, ListResponse } from "../../common/types";
 
 export type Car = {
   id: number;
@@ -8,7 +8,9 @@ export type Car = {
   year: number;
   kilometers: number;
   price: number;
+  image: string;
 };
 export type CarResponse = Car;
 export type CarListResponse = ListResponse<Car>
+export type CarInfiniteResponse = InfiniteQueryResponse<Car>
 
