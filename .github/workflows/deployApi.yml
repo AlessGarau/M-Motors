@@ -35,6 +35,11 @@ jobs:
         run: |
           eb init -p python-3.11 m-motor-groupe6 --region eu-west-3
 
+      - name: Vérification de l'état Elastic Beanstalk
+        working-directory: api
+        run: |
+          eb status
+
       - name: Déploiement sur Elastic Beanstalk
         working-directory: api
         run: eb deploy m-motor-groupe6-env
