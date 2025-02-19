@@ -25,6 +25,9 @@ jobs:
       # - name: Run tests
       #   run: npm test
       #   working-directory: ./client
+      - name: Create .env file for Vite
+        run: echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
+        working-directory: ./client
 
       - name: Build
         run: npm run build
@@ -41,7 +44,5 @@ jobs:
           AWS_REGION: "eu-west-3"
           SOURCE_DIR: "./client/dist"
 
-      - name: Create .env file for Vite
-        run: echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
-        working-directory: ./client
+      
 
