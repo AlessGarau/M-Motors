@@ -5,11 +5,22 @@ import { useInView } from "react-intersection-observer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Car, CarInfiniteResponse, CarListResponse } from "../admin/panels/cars/types";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 
-const fetchCarData = async ({ pageParam = 1 }): Promise<CarListResponse> => {
+const fetchCarData = async (pageParam = 1, filters: string | null): Promise<CarListResponse> => {
+    let url = `${import.meta.env.VITE_API_URL}car/?page=${pageParam}&page_size=10`
+    if (filters) {
+        url = url + `&service_type=${filters}`
+    }
     const response = await fetch(
-        `${import.meta.env.VITE_API_URL}car/?page=${pageParam}&page_size=10`,
+        url,
         { credentials: "include" }
     );
     if (!response.ok) {
@@ -21,6 +32,7 @@ const fetchCarData = async ({ pageParam = 1 }): Promise<CarListResponse> => {
 function CarsList() {
     const navigate = useNavigate();
     const { ref, inView } = useInView();
+    const [filters, setFilters] = useState<string | undefined>(undefined)
 
     const {
         data,
@@ -30,8 +42,8 @@ function CarsList() {
         isFetchingNextPage,
         isLoading,
     } = useInfiniteQuery<CarListResponse, Error, CarInfiniteResponse, CarListResponse[], number>({
-        queryKey: ["cars"],
-        queryFn: ({ pageParam = 1 }) => fetchCarData({ pageParam }),
+        queryKey: ["cars", filters],
+        queryFn: ({ pageParam = 1 }) => fetchCarData(pageParam, filters),
         initialPageParam: 1,
         getNextPageParam: (lastPage, allPages) => {
             return lastPage.next ? allPages.length + 1 : undefined;
@@ -62,36 +74,55 @@ function CarsList() {
             )}
 
             {!isLoading && !error && data && (
-                <div className="flex flex-wrap gap-2 justify-center">
-                    {data?.pages.flatMap(page => page.results).map((car: Car) => (
-                        <Card className="w-1/3 shadow rounded flex items-center">
-                            <CardHeader>
-                                <CardTitle>{car.brand} - {car.model}</CardTitle>
-                                <CardDescription>
-                                    <ul>
-                                        <li>Kilometers: {car.kilometers}</li>
-                                        <li>Price: {car.price} €</li>
-                                        <li>Type: {car.service_type === "RENTAL" ? "rental" : "sale"}</li>
-                                        <li>Year: {car.year}</li>
-                                    </ul>
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                {car.image && <img src={car.image} alt="" />}
-                            </CardContent>
-                            <CardFooter>
-                                <Button onClick={() => navigate(`/contract/${car.id}`)}>
-                                    Apply for the car
-                                </Button>
-                            </CardFooter>
-                        </Card>
+                <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                        <Select value={filters} onValueChange={(value) => setFilters(value)}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Filters" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="SALE">Cars for sale</SelectItem>
+                                <SelectItem value="RENTAL">Cars for rental</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {filters && (
+                            <Button variant="outline" onClick={() => setFilters(undefined)}>
+                                Clear filter
+                            </Button>
+                        )}
+                    </div>
+                    <div className="flex flex-wrap gap-2 justify-center w-full">
+                        {data?.pages.flatMap(page => page.results).map((car: Car) => (
+                            <Card className="w-1/3 shadow rounded flex items-center">
+                                <CardHeader>
+                                    <CardTitle>{car.brand} - {car.model}</CardTitle>
+                                    <CardDescription>
+                                        <ul>
+                                            <li>Kilometers: {car.kilometers}</li>
+                                            <li>Price: {car.price} €</li>
+                                            <li>Type: {car.service_type === "RENTAL" ? "rental" : "sale"}</li>
+                                            <li>Year: {car.year}</li>
+                                        </ul>
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    {car.image && <img src={car.image} alt="" />}
+                                </CardContent>
+                                <CardFooter>
+                                    <Button onClick={() => navigate(`/contract/${car.id}`)}>
+                                        Apply for the car
+                                    </Button>
+                                </CardFooter>
+                            </Card>
 
-                    ))}
+                        ))}
+                    </div>
+
+                    <div ref={ref} className="flex justify-center items-center mt-4">
+                        {isFetchingNextPage && <span>Loading more...</span>}
+                    </div>
                 </div>
             )}
-            <div ref={ref} className="flex justify-center items-center mt-4">
-                {isFetchingNextPage && <span>Loading more...</span>}
-            </div>
         </div>
     );
 }
