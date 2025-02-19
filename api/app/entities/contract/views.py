@@ -61,19 +61,28 @@ class ContractViewSet(viewsets.ModelViewSet):
         instance.delete()
 
     def update(self, request, *args, **kwargs):
-        restricted_fields = {"id", "status", "created_at", "user", "pdf_file"}
+        restricted_fields = {"id", "created_at", "user", "pdf_file"}
         data = request.data.copy()
+
+        instance = self.get_object()
+        if instance.user != request.user:
+            if request.user.profile.is_admin:
+                allowed_fields = {"status"}
+                invalid_fields = set(data.keys()) - allowed_fields
+                if invalid_fields:
+                    return Response({"error": f"Admins can only modify the status of other users' contracts. Invalid fields: {', '.join(invalid_fields)}"},status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({"error": "You do not have permission to modify this contract."}, status=status.HTTP_403_FORBIDDEN)
+
+        if "status" in data and not request.user.profile.is_admin:
+            return Response({"error": "You cannot modify the status of this contract."},status=status.HTTP_400_BAD_REQUEST)
 
         invalid_fields = restricted_fields.intersection(data.keys())
         if invalid_fields:
             return Response({"error": f"You cannot modify these fields: {', '.join(invalid_fields)}"}, status=status.HTTP_400_BAD_REQUEST)
 
-        instance = self.get_object()
-
-        if instance.user != request.user:
-            return Response({"error": "You do not have permission to modify this contract."},status=status.HTTP_403_FORBIDDEN)
-
         response = super().update(request, *args, **kwargs)
+
         instance.refresh_from_db()
         new_pdf_path = generate_contract_pdf(instance)
 
@@ -89,6 +98,30 @@ class ContractViewSet(viewsets.ModelViewSet):
         os.remove(new_pdf_path)
 
         return response
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        user = request.user
+        data = request.data.copy()
+
+        if not user.profile.is_admin:
+            if instance.user != user:
+                return Response({"error": "You do not have permission to modify this contract."},status=status.HTTP_403_FORBIDDEN)
+
+        if user.profile.is_admin and instance.user != user:
+            allowed_fields = {"status"}
+
+            invalid_fields = set(data.keys()) - allowed_fields
+            if invalid_fields:
+                return Response({"error": f"Admins can only modify the status of other users' contracts. Invalid fields: {', '.join(invalid_fields)}"},status=status.HTTP_400_BAD_REQUEST)
+
+        if "status" in request.data:
+            request.data["status"] = request.data["status"].upper()
+
+        if "status" in request.data and not user.profile.is_admin:
+            return Response({"error": "You cannot modify the status of this contract."},status=status.HTTP_400_BAD_REQUEST)
+
+        return super().partial_update(request, *args, **kwargs)
 
     @action(detail=True, methods=["get"], url_path="download")
     def download_contract(self, request, pk=None):
