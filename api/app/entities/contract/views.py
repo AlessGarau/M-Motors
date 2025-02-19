@@ -6,7 +6,7 @@ from app.entities.contract.serializer import ContractSerializer
 from app.entities.contract.utils import generate_contract_pdf
 from rest_framework.response import Response
 from django.http import FileResponse
-from app.entities.contract.filters import ContractFilter 
+from app.entities.contract.filters import ContractFilter
 from rest_framework.decorators import action
 import os
 
@@ -61,7 +61,7 @@ class ContractViewSet(viewsets.ModelViewSet):
         instance.delete()
 
     def update(self, request, *args, **kwargs):
-        restricted_fields = {"id", "created_at", "user", "pdf_file"}
+        restricted_fields = {"id", "created_at", "user", "pdf_file", "updated_date"}
         data = request.data.copy()
 
         instance = self.get_object()
@@ -105,23 +105,28 @@ class ContractViewSet(viewsets.ModelViewSet):
         data = request.data.copy()
 
         if not user.profile.is_admin:
-            if instance.user != user:
-                return Response({"error": "You do not have permission to modify this contract."},status=status.HTTP_403_FORBIDDEN)
+            return Response({"error": "You do not have permission to modify this contract."},
+                            status=status.HTTP_403_FORBIDDEN)
 
-        if user.profile.is_admin and instance.user != user:
-            allowed_fields = {"status"}
+        if set(request.data.keys()) != {"status"}:
+            return Response({"error": "Only `status` can be modified using PATCH."},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-            invalid_fields = set(data.keys()) - allowed_fields
-            if invalid_fields:
-                return Response({"error": f"Admins can only modify the status of other users' contracts. Invalid fields: {', '.join(invalid_fields)}"},status=status.HTTP_400_BAD_REQUEST)
+        request.data["status"] = request.data["status"].upper()
+        response = super().partial_update(request, *args, **kwargs)
+        signed_by_admin = user.username
+        new_pdf_path = generate_contract_pdf(instance, signed_by_admin=signed_by_admin)
 
-        if "status" in request.data:
-            request.data["status"] = request.data["status"].upper()
+        if os.path.exists(new_pdf_path):
+            if instance.pdf_file:
+                instance.pdf_file.delete(save=False)
 
-        if "status" in request.data and not user.profile.is_admin:
-            return Response({"error": "You cannot modify the status of this contract."},status=status.HTTP_400_BAD_REQUEST)
+            with open(new_pdf_path, "rb") as pdf_file:
+                instance.pdf_file.save(f"contract_{instance.id}.pdf", File(pdf_file))
+                instance.save()
+            os.remove(new_pdf_path)
 
-        return super().partial_update(request, *args, **kwargs)
+        return response
 
     @action(detail=True, methods=["get"], url_path="download")
     def download_contract(self, request, pk=None):

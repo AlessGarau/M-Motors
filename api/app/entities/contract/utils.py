@@ -5,7 +5,7 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 
-def generate_contract_pdf(contract):
+def generate_contract_pdf(contract, signed_by_admin=None):
     car = contract.car
 
     directory = "contracts/"
@@ -85,7 +85,9 @@ def generate_contract_pdf(contract):
     elements.append(Spacer(1, 50))
     elements.append(Paragraph(f"Client : {contract.user.username}", styles["Normal"]))
     elements.append(Spacer(1, 10))
-    elements.append(Paragraph("Représentant de l'entreprise : _________________________", styles["Normal"]))
+    if signed_by_admin:
+        elements.append(Spacer(1, 20))
+        elements.append(Paragraph(f"<b>Signé par l'admin :</b> {signed_by_admin}", styles["Normal"]))
 
     doc.build(elements)
 
