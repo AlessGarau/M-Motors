@@ -17,33 +17,39 @@ import { Outlet, useLocation } from "react-router-dom";
 import CarsPanel from "./panels/cars/CarsPanel";
 import CarsForm from "./panels/cars/CarsForm";
 import { Toaster } from "@/components/ui/toaster";
+import ContractsPanel from "./panels/contracts/ContractsPanel";
+import ContractsForm from "./panels/contracts/ContractsForm";
 import ProtectedRoute from "../protected/ProtectedRoute";
 
 export const adminRouter = [
   {
     element: <ProtectedRoute />,
     children: [
+    {path: "admin",
+    element: <AdminLayout />,
+    children: [
       {
-        path: "admin",
-        element: <AdminLayout />,
-        children: [
-          {
-            path: "cars",
-            element: <CarsPanel />,
-            children: [],
-          },
-          {
-            path: "cars/update/:id",
-            element: <CarsForm />,
-          },
-          {
-            path: "cars/create",
-            element: <CarsForm />
-          }
-        ],
+        path: "cars",
+        element: <CarsPanel />,
       },
-    ]
-  }
+      {
+        path: "cars/update/:id",
+        element: <CarsForm />,
+      },
+      {
+        path: "cars/create",
+        element: <CarsForm />,
+      },
+      {
+        path: "contracts",
+        element: <ContractsPanel />,
+      },
+      {
+        path: "cars/update/:id",
+        element: <ContractsForm />,
+      },
+    ],
+  },]}
 ];
 
 function AdminLayout() {
