@@ -56,4 +56,4 @@ jobs:
         working-directory: api
         run: eb deploy --staged --verbose m-motor-groupe6-env
         env:
-          DJANGO_SETTINGS_MODULE: "./moters.settings"
+          DJANGO_SETTINGS_MODULE: "moters.settings"
