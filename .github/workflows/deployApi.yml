@@ -47,9 +47,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
           AWS_STORAGE_BUCKET_NAME=${{ secrets.AWS_STORAGE_BUCKET_NAME }} \
           AWS_S3_REGION_NAME=${{ secrets.AWS_S3_REGION_NAME }}
+          
+      - name: Nettoyage du cache EB CLI
+        working-directory: api
+        run: eb labs cleanup-versions
 
       - name: Déploiement sur Elastic Beanstalk
         working-directory: api
-        run: eb deploy --staged m-motor-groupe6-env
+        run: eb deploy --staged --verbose m-motor-groupe6-env
         env:
           DJANGO_SETTINGS_MODULE: "./moters.settings"
