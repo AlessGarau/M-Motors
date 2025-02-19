@@ -29,7 +29,9 @@ def generate_contract_pdf(contract):
         ["Date de fin", f"{contract.end_date}"],
         ["Véhicule", f"{car.brand} {car.model} - {car.year}"],
         ["Kilométrage", f"{car.kilometers} km"],
-        ["Prix", f"{car.price} €"]
+        ["Prix", f"{car.price} €"],
+        ["Date de création", f"{contract.created_at}"],
+        ["Date de modification", f"{contract.updated_date}"]
     ]
 
     table = Table(details, colWidths=[150, 300])
