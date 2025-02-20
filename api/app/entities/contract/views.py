@@ -16,13 +16,6 @@ class ContractViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = ContractFilter
 
-    def get_permissions(self):
-        if self.action in ['destroy', 'list', 'partial_update', 'update']:
-            return [permissions.IsAuthenticated()]
-        elif self.action in ['retrieve', 'download_contract']:
-            return [permissions.IsAuthenticated()]
-        return super().get_permissions()
-
     def get_queryset(self):
             return Contract.objects.filter(user=self.request.user)
 
