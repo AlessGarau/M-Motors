@@ -27,14 +27,11 @@ class UserViewSet(viewsets.ModelViewSet):
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
         if user:
+            user_data = UserSerializer(user).data
             token, created = Token.objects.get_or_create(user=user)
             response = Response({
                 "token": token.key,
-                "user": {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email
-                }
+                "user": user_data
             })
             return response
         else:

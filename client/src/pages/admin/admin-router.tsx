@@ -19,34 +19,39 @@ import CarsForm from "./panels/cars/CarsForm";
 import { Toaster } from "@/components/ui/toaster";
 import ContractsPanel from "./panels/contracts/ContractsPanel";
 import ContractsForm from "./panels/contracts/ContractsForm";
+import ProtectedRoute from "../protected/ProtectedRoute";
 
 export const adminRouter = [
   {
-    path: "admin",
-    element: <AdminLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        path: "cars",
-        element: <CarsPanel />,
-      },
-      {
-        path: "cars/update/:id",
-        element: <CarsForm />,
-      },
-      {
-        path: "cars/create",
-        element: <CarsForm />,
-      },
-      {
-        path: "contracts",
-        element: <ContractsPanel />,
-      },
-      {
-        path: "cars/update/:id",
-        element: <ContractsForm />,
-      },
-    ],
-  },
+        path: "admin",
+        element: <AdminLayout />,
+        children: [
+          {
+            path: "cars",
+            element: <CarsPanel />,
+          },
+          {
+            path: "cars/update/:id",
+            element: <CarsForm />,
+          },
+          {
+            path: "cars/create",
+            element: <CarsForm />,
+          },
+          {
+            path: "contracts",
+            element: <ContractsPanel />,
+          },
+          {
+            path: "cars/update/:id",
+            element: <ContractsForm />,
+          },
+        ],
+      },]
+  }
 ];
 
 function AdminLayout() {
