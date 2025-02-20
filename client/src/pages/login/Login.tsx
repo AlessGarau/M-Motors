@@ -21,11 +21,12 @@ const LoginForm = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),
             });
-
             const data = await response.json();
             if (!response.ok) throw new Error(data.detail || "Login failed");
             localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
             auth.setUser(data.user);
+            auth.setIsAdmin(data.user.is_admin)
             navigate("/")
         } catch (error) {
             console.error(error)
