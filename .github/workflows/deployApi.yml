@@ -40,6 +40,11 @@ jobs:
         run: |
           eb status
 
+      - name: Liste des environnements Elastic Beanstalk
+        working-directory: api
+        run: |
+          eb list
+
       - name: Déploiement sur Elastic Beanstalk
         working-directory: api
         run: eb deploy m-motor-groupe6-env
