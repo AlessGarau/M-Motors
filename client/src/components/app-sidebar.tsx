@@ -21,6 +21,9 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/contexts/auth";
+import { Button } from "./ui/button";
+import { useNavigate } from "react-router";
 
 type navItem = {
   title: string;
@@ -35,21 +38,19 @@ const data: { navMain: navItem[] } = {
       title: "Resources",
       url: "#",
       isActive: true,
-      items: [
-        { title: "Cars", url: "/admin/cars" },
-      ],
+      items: [{ title: "Cars", url: "/admin/cars" }],
     },
     {
       title: "Clients",
       url: "#",
-      items: [
-        { title: "Contracts", url: "/admin/contracts" },
-      ]
-    }
+      items: [{ title: "Contracts", url: "/admin/contracts" }],
+    },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { isAdmin, user, handleLogout } = useAuth();
+  const navigate = useNavigate();
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -68,6 +69,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        {user ? (
+          <Button onClick={handleLogout}>Logout</Button>
+        ) : (
+          <Button onClick={() => navigate("/login")}>Login</Button>
+        )}
       </SidebarHeader>
       <SidebarContent className="gap-0">
         {/* We create a collapsible SidebarGroup for each parent. */}
@@ -92,8 +98,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     <SidebarMenuSub>
-                    {item.items &&
-                      item.items.map((item) => (
+                      {item.items &&
+                        item.items.map((item) => (
                           <SidebarMenuSubItem key={item.title}>
                             <SidebarMenuSubButton
                               asChild
@@ -102,8 +108,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               <a href={item.url}>{item.title}</a>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
-                      ))}
-                      </SidebarMenuSub>
+                        ))}
+                    </SidebarMenuSub>
                   </SidebarMenu>
                 </SidebarGroupContent>
               </CollapsibleContent>

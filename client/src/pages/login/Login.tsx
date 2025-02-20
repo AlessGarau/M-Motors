@@ -27,7 +27,7 @@ const LoginForm = () => {
             localStorage.setItem("user", JSON.stringify(data.user));
             auth.setUser(data.user);
             auth.setIsAdmin(data.user.is_admin)
-            navigate("/")
+            navigate(data.user.is_admin ? "/admin/cars" : "/")
         } catch (error) {
             console.error(error)
         } finally {
