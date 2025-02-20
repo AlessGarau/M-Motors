@@ -1,10 +1,11 @@
 import os
+from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 
-def generate_contract_pdf(contract):
+def generate_contract_pdf(contract, signed_by_admin=None):
     car = contract.car
 
     directory = "contracts/"
@@ -29,7 +30,9 @@ def generate_contract_pdf(contract):
         ["Date de fin", f"{contract.end_date}"],
         ["Véhicule", f"{car.brand} {car.model} - {car.year}"],
         ["Kilométrage", f"{car.kilometers} km"],
-        ["Prix", f"{car.price} €"]
+        ["Prix", f"{car.price} €"],
+        ["Date de création", f"Le {contract.created_at.strftime('%Y/%m/%d')} à {contract.created_at.strftime('%Hh%M')}"],
+        ["Dernière modification", f"Le {contract.updated_date.strftime('%Y/%m/%d')} à {contract.updated_date.strftime('%Hh%M')}"]
     ]
 
     table = Table(details, colWidths=[150, 300])
@@ -82,7 +85,9 @@ def generate_contract_pdf(contract):
     elements.append(Spacer(1, 50))
     elements.append(Paragraph(f"Client : {contract.user.username}", styles["Normal"]))
     elements.append(Spacer(1, 10))
-    elements.append(Paragraph("Représentant de l'entreprise : _________________________", styles["Normal"]))
+    if signed_by_admin:
+        elements.append(Spacer(1, 20))
+        elements.append(Paragraph(f"<b>Signé par l'admin :</b> {signed_by_admin}", styles["Normal"]))
 
     doc.build(elements)
 
