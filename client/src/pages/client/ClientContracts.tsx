@@ -73,7 +73,7 @@ export function ClientContracts() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">My Contracts</h1>
+      <h1 className="text-2xl font-bold mb-4">Contracts</h1>
       <Separator className="mb-4" />
 
       {data?.pages?.flatMap((page) => page.results).length ? (

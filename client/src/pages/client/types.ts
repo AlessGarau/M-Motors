@@ -1,6 +1,3 @@
-// src/types.ts
-
-// Type représentant un contrat individuel
 export type Contract = {
     id: number;
     status: string;
@@ -10,7 +7,6 @@ export type Contract = {
     car: number;
 };
 
-// Type représentant la réponse de l'API de contrats
 export type ContractResponse = {
     count: number;
     next: string | null;
