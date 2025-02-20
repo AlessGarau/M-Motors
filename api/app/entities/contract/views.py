@@ -92,7 +92,7 @@ class ContractViewSet(viewsets.ModelViewSet):
 
         return response
 
-    def partial_update(self, request):
+    def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         user = request.user
         data = request.data.copy()
