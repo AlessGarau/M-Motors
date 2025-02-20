@@ -187,19 +187,19 @@ export default function ContractsForm() {
             <Separator className="mb-4" />
             <div className="flex flex-col gap-4 mb-4">
                 <div>
-                    <label className="font-bold ">Brand</label>
+                    <label className="font-bold ">Service Type</label>
                     <Input
                         type="text"
-                        value={car?.brand}
+                        value={car?.service_type || ""}
                         disabled
                         className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     />
                 </div>
                 <div>
-                    <label className="font-bold ">Kilometers</label>
+                    <label className="font-bold ">Brand</label>
                     <Input
                         type="text"
-                        value={car?.kilometers}
+                        value={car?.brand || ""}
                         disabled
                         className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     />
@@ -208,25 +208,7 @@ export default function ContractsForm() {
                     <label className="font-bold ">Model</label>
                     <Input
                         type="text"
-                        value={car?.model}
-                        disabled
-                        className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    />
-                </div>
-                <div>
-                    <label className="font-bold ">Price</label>
-                    <Input
-                        type="text"
-                        value={car?.price}
-                        disabled
-                        className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    />
-                </div>
-                <div>
-                    <label className="font-bold ">Service Type</label>
-                    <Input
-                        type="text"
-                        value={car?.service_type}
+                        value={car?.model || ""}
                         disabled
                         className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     />
@@ -235,7 +217,25 @@ export default function ContractsForm() {
                     <label className="font-bold ">Year</label>
                     <Input
                         type="text"
-                        value={car?.year}
+                        value={car?.year || 0}
+                        disabled
+                        className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    />
+                </div>
+                <div>
+                    <label className="font-bold ">Kilometers</label>
+                    <Input
+                        type="text"
+                        value={car?.kilometers || 0}
+                        disabled
+                        className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    />
+                </div>
+                <div>
+                    <label className="font-bold ">Price</label>
+                    <Input
+                        type="text"
+                        value={car?.price || 0}
                         disabled
                         className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     />
