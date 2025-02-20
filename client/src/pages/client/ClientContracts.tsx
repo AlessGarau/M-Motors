@@ -1,8 +1,7 @@
-// src/components/ClientContracts.tsx
-
 import React, { useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -28,6 +27,29 @@ const fetchUserContracts = async (
   return response.json();
 };
 
+const downloadContractPDF = async (contractId: number) => {
+  try {
+    const response = await fetchWithAuth(
+      `${import.meta.env.VITE_API_URL}contract/${contractId}/download/`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to download PDF");
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `contract_${contractId}.pdf`;
+    link.click();
+
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading PDF:", error);
+  }
+};
 export function ClientContracts() {
   const { ref, inView } = useInView();
 
@@ -103,14 +125,12 @@ export function ClientContracts() {
                 </CardHeader>
                 <CardContent>
                   {contract.pdf_file ? (
-                    <a
-                      href={contract.pdf_file}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 underline block mt-2"
+                    <Button
+                      onClick={() => downloadContractPDF(contract.id)}
+                      className="text-white block mt-2"
                     >
                       Download PDF
-                    </a>
+                    </Button>
                   ) : (
                     <p className="text-gray-500 mt-2">No PDF available</p>
                   )}
