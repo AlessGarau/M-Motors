@@ -39,9 +39,11 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
                 try {
                     const response = await fetchWithAuth(import.meta.env.VITE_API_URL + "user/me/");
                     const data = await response.json();
-                    localStorage.setItem("user", JSON.stringify(data.user));
-                    setUser(data.user);
-                    setIsAdmin(data.user.is_admin)
+                    if (data.user) {
+                        localStorage.setItem("user", JSON.stringify(data.user));
+                        setUser(data.user);
+                        setIsAdmin(data.user.is_admin)
+                    }
                 } catch (error) {
                     console.error("Failed to fetch user:", error);
                     setUser(null);
