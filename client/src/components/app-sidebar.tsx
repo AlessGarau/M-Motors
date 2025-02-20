@@ -49,7 +49,7 @@ const data: { navMain: navItem[] } = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { isAdmin, user, handleLogout } = useAuth();
+  const { user, handleLogout } = useAuth();
   const navigate = useNavigate();
   return (
     <Sidebar {...props}>
