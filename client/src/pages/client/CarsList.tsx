@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { useInfiniteQuery, UseInfiniteQueryResult } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { useInView } from "react-intersection-observer";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select"
 
 
-const fetchCarData = async (pageParam = 1, filters: string | null): Promise<CarListResponse> => {
+const fetchCarData = async (pageParam = 1, filters: string | undefined): Promise<CarListResponse> => {
     let url = `${import.meta.env.VITE_API_URL}car/?page=${pageParam}&page_size=10`
     if (filters) {
         url = url + `&service_type=${filters}`
@@ -41,7 +41,7 @@ function CarsList() {
         hasNextPage,
         isFetchingNextPage,
         isLoading,
-    } = useInfiniteQuery<CarListResponse, Error, CarInfiniteResponse, CarListResponse[], number>({
+    } = useInfiniteQuery<any, Error, CarInfiniteResponse, any, number>({
         queryKey: ["cars", filters],
         queryFn: ({ pageParam = 1 }) => fetchCarData(pageParam, filters),
         initialPageParam: 1,
