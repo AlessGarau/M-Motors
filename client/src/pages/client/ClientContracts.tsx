@@ -1,6 +1,3 @@
-import React, { useEffect } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useInView } from "react-intersection-observer";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,6 +8,10 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { fetchWithAuth } from "@/lib/queries";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+import { useNavigate } from "react-router";
 import { Contract, ContractResponse } from "./types";
 
 const fetchUserContracts = async (
@@ -50,6 +51,7 @@ const downloadContractPDF = async (contractId: number) => {
     console.error("Error downloading PDF:", error);
   }
 };
+
 export function ClientContracts() {
   const { ref, inView } = useInView();
 
@@ -72,6 +74,8 @@ export function ClientContracts() {
     initialPageParam: 1,
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
@@ -92,6 +96,25 @@ export function ClientContracts() {
         <button onClick={() => window.location.reload()}>Retry</button>
       </div>
     );
+
+  const handleUpdate = (contractId: number) => {
+    navigate(`/contracts/update/${contractId}`);
+  };
+
+  const handleDelete = async (contractId: number) => {
+    try {
+      const response = await fetchWithAuth(`${import.meta.env.VITE_API_URL}contract/${contractId}/`, { method: "DELETE" });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete contract");
+      } else {
+        window.location.reload();
+      }
+
+    } catch (error) {
+      console.error("Error deleting Contract:", error);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -125,12 +148,25 @@ export function ClientContracts() {
                 </CardHeader>
                 <CardContent>
                   {contract.pdf_file ? (
-                    <Button
-                      onClick={() => downloadContractPDF(contract.id)}
-                      className="text-white block mt-2"
-                    >
-                      Download PDF
-                    </Button>
+                    <div className="flex flex-wrap items-center gap-1">
+                      <Button
+                        variant={"outline"}
+                        onClick={() => handleUpdate(contract.id)}
+                      >
+                        Update
+                      </Button>
+                      <Button
+                        onClick={() => downloadContractPDF(contract.id)}
+                      >
+                        Download PDF
+                      </Button>
+                      <Button
+                        onClick={() => handleDelete(contract.id)}
+                        variant={"destructive"}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   ) : (
                     <p className="text-gray-500 mt-2">No PDF available</p>
                   )}
