@@ -1,3 +1,4 @@
+import { Skeleton } from '@/components/ui/skeleton';
 import { fetchWithAuth } from '@/lib/queries';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -50,7 +51,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         }
     }, [])
 
-    if (loading) return <p>Loading...</p>
+    if (loading) return <Skeleton className='h-screen w-full' />;
 
     return <AuthContext.Provider value={{ user, setUser, isAdmin, handleLogout, getUser }}>
         {children}
