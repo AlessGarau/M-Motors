@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
-import { useInView } from "react-intersection-observer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Car, CarInfiniteResponse, CarListResponse } from "../admin/panels/cars/types";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import { useNavigate } from "react-router";
+import { Car, CarInfiniteResponse, CarListResponse } from "../admin/panels/cars/types";
 
 
 const fetchCarData = async (pageParam = 1, filters: string | undefined): Promise<CarListResponse> => {
@@ -109,7 +109,7 @@ function CarsList() {
                                     {car.image && <img src={car.image} alt="" />}
                                 </CardContent>
                                 <CardFooter>
-                                    <Button onClick={() => navigate(`/contract/${car.id}`)}>
+                                    <Button onClick={() => navigate(`/contracts/create/?carId=${car.id}`)}>
                                         Apply for the car
                                     </Button>
                                 </CardFooter>
