@@ -1,5 +1,5 @@
-import * as React from "react";
 import { GalleryVerticalEnd } from "lucide-react";
+import * as React from "react";
 
 import {
     Sidebar,
@@ -14,8 +14,8 @@ import {
     SidebarRail,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/auth";
-import { Button } from "./ui/button";
 import { useNavigate } from "react-router";
+import { Button } from "./ui/button";
 
 type navItem = {
     title: string;
@@ -48,14 +48,14 @@ export function ClientSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-                {user ? <Button onClick={handleLogout}>Logout</Button>: <Button onClick={() => navigate("/login")}>Login</Button>}
+                {user ? <Button onClick={handleLogout}>Logout</Button> : <Button onClick={() => navigate("/login")}>Login</Button>}
             </SidebarHeader>
             <SidebarContent className="gap-0">
                 {/* We create a collapsible SidebarGroup for each parent. */}
                 {data.map((item) => (
-                    <SidebarMenu>
+                    <SidebarMenu key={item.title}>
                         <SidebarMenuSub>
-                            <SidebarMenuSubItem key={item.title}>
+                            <SidebarMenuSubItem>
                                 <SidebarMenuSubButton
                                     asChild
                                     isActive={item.isActive}

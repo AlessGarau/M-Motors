@@ -46,7 +46,7 @@ export const adminRouter = [
             element: <ContractsPanel />,
           },
           {
-            path: "cars/update/:id",
+            path: "contracts/update/:id",
             element: <ContractsForm />,
           },
         ],

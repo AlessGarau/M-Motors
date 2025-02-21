@@ -98,15 +98,23 @@ class ContractViewSet(viewsets.ModelViewSet):
         data = request.data.copy()
 
         if not user.profile.is_admin:
-            return Response({"error": "You do not have permission to modify this contract."},
-                            status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "You do not have permission to modify this contract."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
-        if set(request.data.keys()) != {"status"}:
-            return Response({"error": "Only `status` can be modified using PATCH."},
-                            status=status.HTTP_400_BAD_REQUEST)
+        if set(data.keys()) != {"status"}:
+            return Response(
+                {"error": "Only `status` can be modified using PATCH."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        request.data["status"] = request.data["status"].upper()
-        response = super().partial_update(request, *args, **kwargs)
+        data["status"] = data["status"].upper()
+
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
         signed_by_admin = user.username
         new_pdf_path = generate_contract_pdf(instance, signed_by_admin=signed_by_admin)
 
@@ -119,7 +127,8 @@ class ContractViewSet(viewsets.ModelViewSet):
                 instance.save()
             os.remove(new_pdf_path)
 
-        return response
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     @action(detail=True, methods=["get"], url_path="download")
     def download_contract(self, request, pk=None):

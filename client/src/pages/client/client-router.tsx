@@ -1,4 +1,4 @@
-import CarsList from "./CarsList";
+import { ClientSidebar } from "@/components/client-sidebar";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -12,12 +12,14 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/toaster";
 import { Separator } from "@radix-ui/react-separator";
 import { Outlet, useLocation } from "react-router-dom";
-import { Toaster } from "@/components/ui/toaster";
-import { ClientSidebar } from "@/components/client-sidebar";
-import { ClientContracts } from "./ClientContracts";
+
 import ProtectedRoute from "../protected/ProtectedRoute";
+import CarsList from "./CarsList";
+import { ClientContracts } from "./ClientContracts";
+import ContractsForm from "./ContractsForm";
 
 
 export const clientRouter = [
@@ -37,8 +39,16 @@ export const clientRouter = [
                         element: < ClientContracts />,
                     },
                     {
-                        path: "/contract/:id",
+                        path: "/contracts/:id",
                         element: < ClientContracts />,
+                    },
+                    {
+                        path: "/contracts/update/:id",
+                        element: <ContractsForm />,
+                    },
+                    {
+                        path: "/contracts/create",
+                        element: <ContractsForm />,
                     },
                 ]
             }
