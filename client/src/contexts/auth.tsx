@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router';
 interface IAuthContext {
     user: Record<string, any> | null;
     setUser: (user: Record<string, any> | null) => void;
-    setIsAdmin: (isAdmin: boolean) => void;
     isAdmin: boolean;
     handleLogout: () => void
+    getUser: () => Record<string, any>
 }
 
 interface AuthContextProviderProps {
@@ -18,42 +18,41 @@ interface AuthContextProviderProps {
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-    const [user, setUser] = useState<Record<string, any> | null>(() => {
-        const storedUser = localStorage.getItem("user");
-        return storedUser ? JSON.parse(storedUser) : null;
-    });
-    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [user, setUser] = useState<Record<string, any> | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const isAdmin = user?.is_admin ?? false;
     const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("user");
         setUser(null);
-        setIsAdmin(false);
         navigate("/");
+    };
+
+    const getUser = async () => {
+        try {
+            const response = await fetchWithAuth(import.meta.env.VITE_API_URL + "user/me/");
+            const data = await response.json();
+            if (data.user) {
+                setUser(data.user);
+            }
+            setLoading(false)
+            return data.user
+        } catch (error) {
+            console.error("Failed to fetch user:", error);
+            setUser(null);
+        }
     };
 
     useEffect(() => {
         if (!user) {
-            const getUser = async () => {
-                try {
-                    const response = await fetchWithAuth(import.meta.env.VITE_API_URL + "user/me/");
-                    const data = await response.json();
-                    if (data.user) {
-                        localStorage.setItem("user", JSON.stringify(data.user));
-                        setUser(data.user);
-                        setIsAdmin(data.user.is_admin)
-                    }
-                } catch (error) {
-                    console.error("Failed to fetch user:", error);
-                    setUser(null);
-                }
-            };
             getUser();
         }
-    }, []);
+    }, [])
 
-    return <AuthContext.Provider value={{ user, setUser, isAdmin, setIsAdmin, handleLogout }}>
+    if (loading) return <p>Loading...</p>
+
+    return <AuthContext.Provider value={{ user, setUser, isAdmin, handleLogout, getUser }}>
         {children}
     </AuthContext.Provider>
 
