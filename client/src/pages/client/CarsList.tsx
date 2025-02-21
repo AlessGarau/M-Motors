@@ -93,7 +93,7 @@ function CarsList() {
                     </div>
                     <div className="flex flex-wrap gap-2 justify-center w-full">
                         {data?.pages.flatMap(page => page.results).map((car: Car) => (
-                            <Card className="w-1/3 shadow rounded flex items-center" key={car.id}>
+                            <Card className="w-1/3 shadow rounded flex flex-col items-center" key={car.id}>
                                 <CardHeader>
                                     <CardTitle>{car.brand} - {car.model}</CardTitle>
                                     <CardDescription>
