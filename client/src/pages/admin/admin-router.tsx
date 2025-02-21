@@ -19,11 +19,11 @@ import CarsForm from "./panels/cars/CarsForm";
 import { Toaster } from "@/components/ui/toaster";
 import ContractsPanel from "./panels/contracts/ContractsPanel";
 import ContractsForm from "./panels/contracts/ContractsForm";
-import ProtectedRoute from "../protected/ProtectedRoute";
+import AdminRoute from "../protected/AdminRoute";
 
 export const adminRouter = [
   {
-    element: <ProtectedRoute />,
+    element: <AdminRoute />,
     children: [
       {
         path: "admin",
