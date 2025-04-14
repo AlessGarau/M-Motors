@@ -1,13 +1,6 @@
-from rest_framework import viewsets, filters, permissions
-from django_filters.rest_framework import DjangoFilterBackend
-from app.entities.car.models import Car
-from app.entities.car.serializer import CarSerializer
-from app.entities.car.filters import CarFilter 
-from rest_framework.pagination import PageNumberPagination
-from app.permissions.admin_permissions import IsAdminProfile
+from rest_framework import viewsets, permissions
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-import os
 
 from langchain_community.vectorstores import FAISS
 from langchain_ollama import OllamaEmbeddings
@@ -18,6 +11,7 @@ from ai.app.models.llm import BaseLLMApplication, LLMFactory
 from ai.app.models.rag import RAGApplication
 from ai.app.models.prompt import rag_prompt, base_prompt
 from rest_framework.decorators import action
+from app.entities.contract.models import Contract
 
 def create_vector_store(docs):
     embeddings = OllamaEmbeddings(model='llama3.2:1B')
@@ -48,7 +42,7 @@ class ChatViewSet(viewsets.GenericViewSet):
         
         BUCKET_NAME = "contracts"
 
-        files = FileStorage.list_files_in_bucket(BUCKET_NAME)
+        files = Contract.objects.filter(user=self.request.user)
         print(files)
         if not files:
             return Response({"message": "Aucun fichier dans le Bucket. Fin du processus", "received_text": prompt}, status=status.HTTP_200_OK)
