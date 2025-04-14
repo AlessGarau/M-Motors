@@ -120,15 +120,14 @@ WSGI_APPLICATION = "moters.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "admin",
-        "USER": "admin",
-        "PASSWORD": "root",
-        "HOST": "localhost",
+        "ENGINE": os.getenv("DB_HOST", "django.db.backends.sqlite3"),
+        "NAME": os.getenv("POSTGRES_DB", "admin"),
+        "USER": os.getenv("POSTGRES_USER", "admin"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "root"),
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
         "PORT": "5432",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
