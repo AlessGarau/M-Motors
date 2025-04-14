@@ -4,56 +4,45 @@
 
 python3 manage.py migrate
 
-## Run locally
-
-python3 manage.py runserver
-
 ## Create bucket
 
 mc alias set local <http://localhost:9000> minioadmin minioadmin
 mc mb local/my-local-bucket
 mc anonymous set public local/my-local-bucket
 
-## Api
+## Create .env files 
 
-### 1. Get List of Cars
+### In the client folder
 
-- `GET /api/cars/`
-- Filters: `service_type`
-- Example: `GET /api/cars/?service_type=Rental`
+```
+VITE_API_URL="http://localhost:8001/api/"
+```
 
-### 2. Retrieve a Single Car
+### In the api folder
 
-- `GET /api/cars/{id}/`
+```
+MINIO_ENDPOINT_URL=http://motor-m-db-minio:9000
+```
 
-### 3. Create a Car
+## Run with docker compose
+In the projects root folder:
 
-- `POST /api/cars/`
-- JSON Body:
+```
+docker compose -f Docker/docker-compose.dev.yml -p motor-m up -d
+```
 
-  ```json
-  {
-    "brand": "Renault",
-    "service_type": "SALE",
-    "model": "Clio",
-    "year": 2020,
-    "kilometers": 15000,
-    "price": 18000
-  }
-  ```
+## Run the AI
 
-### 4. Update a Car
+To run the AI, you need to have ollama installed, as well as the llama3.2:1B model running locally.
 
-- `PUT /api/cars/{id}/`
+```
+ollama pull llama3.2:1b
+ollama start 
+```
 
-### 5. Partially Update a Car
+The api server needs to run locally and not in the docker container. 
+Please stop the api container and use the following commande to run the server locally:
 
-- `PATCH /api/cars/{id}/`
-
-### 6. Delete a Car
-
-- `DELETE /api/cars/{id}/`
-
-## docs
-
-- <https://django-filter.readthedocs.io/en/stable/guide/usage.html>
+```
+python3 manage.py runserver
+```

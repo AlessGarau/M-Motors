@@ -85,7 +85,7 @@ export default function ContractsForm() {
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
-            car: 0,
+            car: getQueryParam('carId'),
             start_date: "",
             end_date: "",
             sav_included: false,
