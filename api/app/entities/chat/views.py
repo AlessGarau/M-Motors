@@ -50,8 +50,8 @@ class ChatViewSet(viewsets.GenericViewSet):
 
         files = FileStorage.list_files_in_bucket(BUCKET_NAME)
         print(files)
-        # if not files:
-        #     return Response({"message": "Aucun fichier dans le Bucket. Fin du processus", "received_text": prompt}, status=status.HTTP_200_OK)
+        if not files:
+            return Response({"message": "Aucun fichier dans le Bucket. Fin du processus", "received_text": prompt}, status=status.HTTP_200_OK)
 
         selected_file = files[0]
 
