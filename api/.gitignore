@@ -10,3 +10,4 @@ venv
 # Ignore all .env files
 .env
 *.env
+.venv

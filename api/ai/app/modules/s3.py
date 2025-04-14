@@ -3,16 +3,15 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pypdf import PdfReader
 from botocore.config import Config
 
-AWS_ENDPOINT = "http://127.0.0.1:9000"
-ACCESS_KEY = "minioadmin"
-SECRET_KEY = "minioadmin"
+# AWS_ENDPOINT = "http://127.0.0.1:9000"
+# ACCESS_KEY = "minioadmin"
+# SECRET_KEY = "minioadmin"
 
 s3_client = boto3.client(
     "s3",
-    endpoint_url="http://127.0.0.1:9000",
+    endpoint_url="http://localhost:9000",
     aws_access_key_id="minioadmin",
     aws_secret_access_key="minioadmin",
-    config=Config(s3={"addressing_style": "path"}),
 )
 
 class FileStorage:

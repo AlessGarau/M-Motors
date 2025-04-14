@@ -14,13 +14,15 @@ from rest_framework.decorators import action
 from app.entities.contract.models import Contract
 
 def create_vector_store(docs):
-    embeddings = OllamaEmbeddings(model='llama3.2:1B')
+    print("docs", docs)
+    embeddings = OllamaEmbeddings(model='llama3.2')
     # doc_vectors = [embeddings.embed_query(doc.page_content) for doc in docs]
 
     vector_store = FAISS.from_documents(
         docs,
         embedding=embeddings
     )
+    print(vector_store)
 
     return vector_store
 
@@ -43,11 +45,10 @@ class ChatViewSet(viewsets.GenericViewSet):
         BUCKET_NAME = "contracts"
 
         files = Contract.objects.filter(user=self.request.user)
-        print(files)
         if not files:
             return Response({"message": "Aucun fichier dans le Bucket. Fin du processus", "received_text": prompt}, status=status.HTTP_200_OK)
 
-        selected_file = files[0]
+        selected_file = files.first().pdf_file.name
 
         docs = FileStorage.process_pdf_file(BUCKET_NAME, selected_file)
         vector_store = create_vector_store(docs) 
@@ -72,5 +73,4 @@ class ChatViewSet(viewsets.GenericViewSet):
             return Response({"error": "Text field is required"}, status=status.HTTP_400_BAD_REQUEST)
             
         # You'll write the rest of the processing logic here
-        
         return Response({"message": answer, "received_text": prompt}, status=status.HTTP_200_OK)

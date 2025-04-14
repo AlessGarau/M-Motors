@@ -26,9 +26,9 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_DB=admin
     ports:
-      - "5432:8000"
+      - "5432:5432"
     expose:
-      - "8000"
+      - "5432"
 
   motor-m-api:
     build:
