@@ -41,6 +41,11 @@ const data: { navMain: navItem[] } = {
       items: [{ title: "Cars", url: "/admin/cars" }],
     },
     {
+      title: "AI chat",
+      url: "#",
+      items: [{ title: "Chat", url: "/admin/chat" }],
+    },
+    {
       title: "Clients",
       url: "#",
       items: [{ title: "Contracts", url: "/admin/contracts" }],
