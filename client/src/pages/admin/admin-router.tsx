@@ -20,6 +20,7 @@ import { Toaster } from "@/components/ui/toaster";
 import ContractsPanel from "./panels/contracts/ContractsPanel";
 import ContractsForm from "./panels/contracts/ContractsForm";
 import AdminRoute from "../protected/AdminRoute";
+import ChatInterface from "./rag-interface/RagInterface";
 
 export const adminRouter = [
   {
@@ -48,6 +49,10 @@ export const adminRouter = [
           {
             path: "contracts/update/:id",
             element: <ContractsForm />,
+          },
+          {
+            path: "chat/",
+            element: <ChatInterface />,
           },
         ],
       },]
