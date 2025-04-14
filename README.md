@@ -41,7 +41,7 @@ ollama start
 ```
 
 The api server needs to run locally and not in the docker container. 
-Please stop the api container and use the following commande to run the server locally:
+Please stop the api container and use the following command to run the server locally:
 
 ```
 python3 manage.py runserver
