@@ -194,6 +194,6 @@ else:
     AWS_ACCESS_KEY_ID = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
     AWS_SECRET_ACCESS_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
     AWS_STORAGE_BUCKET_NAME = os.getenv("MINIO_BUCKET_NAME", "contracts")
-    AWS_S3_ENDPOINT_URL = os.getenv("MINIO_ENDPOINT_URL", "http://localhost:9000")
+    AWS_S3_ENDPOINT_URL = os.getenv("MINIO_ENDPOINT_URL", "http://motor-m-db-minio:9000")
     AWS_S3_CUSTOM_DOMAIN = f"localhost:9000/{AWS_STORAGE_BUCKET_NAME}"
     MEDIA_URL = f"{AWS_S3_CUSTOM_DOMAIN}/"
